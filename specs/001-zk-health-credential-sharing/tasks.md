@@ -21,7 +21,7 @@
 - [ ] T004 [P] Configure backend Vitest/Supertest coverage in `backend\vitest.config.ts`
 - [ ] T005 [P] Configure frontend Vitest, React Testing Library, and Playwright coverage in `frontend\vitest.config.ts` and `frontend\playwright.config.ts`
 - [ ] T006 [P] Add local environment templates with only public frontend variables in `backend\.env.example` and `frontend\.env.example`
-- [ ] T007 [P] Add Railway service configuration notes and commands in `railway.toml` and `docs\deployment\railway.md`
+- [ ] T007 [P] Add Heroku backend and Vercel frontend deployment configuration in `Procfile` and `docs\deployment\heroku.md` and `docs\deployment\vercel.md`
 
 ---
 
@@ -168,7 +168,7 @@
 - [ ] T085 Run and document quickstart validation results in `specs\001-zk-health-credential-sharing\quickstart.md`
 - [ ] T086 Run backend test, frontend test, Playwright, RLS, and performance suites from `backend\package.json`, `frontend\package.json`, and `supabase\tests\`
 - [ ] T087 Harden operational logging, rate limits, and repeated denied-request privacy protections in `backend\src\middleware\rateLimit.ts` and `backend\src\services\policies\privacyLeakageGuard.ts`
-- [ ] T088 Prepare Railway staging deployment checklist and environment separation verification in `docs\deployment\railway.md`
+- [ ] T088 Prepare Heroku staging deployment checklist and environment separation verification in `docs\deployment\heroku.md`
 
 ---
 

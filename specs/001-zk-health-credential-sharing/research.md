@@ -13,7 +13,7 @@ or agent operation details to browsers.
   surface to the browser and conflict with the requirement that SDK integration
   is backend-only.
 - Direct Supabase Edge Functions for T3 calls: rejected for the initial plan
-  because the user requested Node.js + Express backend on Railway.
+  because the user requested Node.js + Express backend on Heroku.
 
 Sources:
 - https://docs.terminal3.io/developers/adk/overview/what-is-adk
@@ -83,16 +83,19 @@ consistent across the product.
 - Separate visual systems per role: rejected because it increases cognitive load
   and weakens audit consistency.
 
-## Decision: Deploy frontend and backend as separate Railway services
+## Decision: Deploy backend on Heroku and frontend on Vercel
 
-**Rationale**: Railway environment separation can keep frontend public config
-apart from backend secrets such as Supabase service role keys and Terminal 3
-developer keys. The backend service is the only runtime with T3 SDK credentials.
+**Rationale**: Heroku and Vercel provide separate environments that keep frontend
+public config apart from backend secrets such as Supabase service role keys and
+Terminal 3 developer keys. The Heroku backend service is the only runtime with
+T3 SDK credentials.
 
 **Alternatives considered**:
 - Single static deployment only: rejected because Express backend is required.
 - Store secrets in frontend environment variables: rejected because browser
   builds expose frontend variables.
+- Railway single-platform deployment: rejected in favor of best-in-class
+  platform approach (Heroku for backend, Vercel for frontend).
 
 ## Terminal 3 Onboarding and Documentation Findings
 

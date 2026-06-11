@@ -5,7 +5,8 @@
 - Node.js >=18
 - Supabase project with Auth and Realtime enabled
 - Terminal 3 testnet developer key and DID from the Terminal 3 claim flow
-- Railway account for deployment
+- Heroku account for backend deployment
+- Vercel account for frontend deployment
 - Local environment files for frontend and backend
 
 ## 1. Configure Environment
@@ -112,13 +113,13 @@ Required checks:
 - Performance checks cover proof decision latency, revocation effectiveness, and
   audit event visibility.
 
-## 7. Deploy to Railway
+## 7. Deploy to Heroku (Backend) + Vercel (Frontend)
 
-1. Create separate Railway services for frontend and backend.
-2. Configure backend-only secrets in the backend service.
-3. Configure frontend public variables only in the frontend service.
-4. Set Railway environments for staging and production.
-5. Run Supabase migrations before promoting production.
+1. Create a Heroku app for the backend (`backend/`) and a Vercel project for the frontend (`frontend/`).
+2. Configure backend-only secrets (Supabase service role key, Terminal 3 keys) as Heroku Config Vars.
+3. Configure frontend public variables (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_API_BASE_URL`) in Vercel Environment Variables.
+4. Set Heroku pipelines for staging and production environments.
+5. Run Supabase migrations before promoting to production.
 6. Smoke test signup, DID registration, proof request, delegation revocation,
    claim decision, and live audit log.
 

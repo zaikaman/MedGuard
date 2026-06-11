@@ -24,14 +24,14 @@ Clinic/Insurer dashboards.
 ## Technical Context
 
 **Language/Version**: TypeScript on Node.js >=18; React 18 + Vite frontend; Express backend  
-**Primary Dependencies**: React, Vite, React Router, Supabase JS client, Node.js, Express, Terminal 3 `@terminal3/t3n-sdk`, Zod or equivalent validation, Railway deployment runtime  
+**Primary Dependencies**: React, Vite, React Router, Supabase JS client, Node.js, Express, Terminal 3 `@terminal3/t3n-sdk`, Zod or equivalent validation, Heroku (backend) + Vercel (frontend) deployment runtimes  
 **Storage**: Supabase PostgreSQL for metadata, credential hashes, proof records, delegation records, referrals, claim decisions, and audit events; Supabase Auth for users; T3N for raw health records/PII and T3 agent execution context  
 **Testing**: Vitest + React Testing Library for frontend units/components; Playwright for role dashboard flows; Node test runner or Vitest + Supertest for Express APIs; Supabase RLS policy tests; contract tests against OpenAPI examples; mocked Terminal 3 SDK integration tests plus testnet smoke tests when tokens are available  
-**Target Platform**: Web app deployed to Railway with separate frontend/backend services and environment-separated config for local, staging, and production  
+**Target Platform**: Web app with Express backend deployed to Heroku and React + Vite frontend deployed to Vercel, with environment-separated config for local, staging, and production  
 **Project Type**: Web application with separate frontend and backend services  
 **Performance Goals**: 95% of proof request decisions visible within 5 seconds; 95% of revocations effective for new proof requests within 2 seconds; 95% of audit events visible within 3 seconds; support at least 1,000 proof decisions per hour  
 **Constraints**: Terminal 3 SDK integration is backend-only; Supabase stores no raw health records or PII from T3N; RBAC enforced in Express middleware and Supabase RLS; all dashboards receive equal production-quality UI treatment; audit log updates must be live for all roles  
-**Scale/Scope**: Three role dashboards, three T3 agent identities, REST API, Supabase schema/RLS, real-time audit panel, Railway deployment, and bounty documentation findings
+**Scale/Scope**: Three role dashboards, three T3 agent identities, REST API, Supabase schema/RLS, real-time audit panel, Heroku + Vercel deployment, and bounty documentation findings
 
 ## Constitution Check
 
