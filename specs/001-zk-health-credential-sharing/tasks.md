@@ -110,7 +110,7 @@
 
 ### Implementation for User Story 2
 
-- [ ] T055 [P] [US2] Implement insurer claim repository for proof-backed decisions in `backend\src\services\supabase\insurerClaimRepository.ts`
+- [x] T055 [P] [US2] Implement insurer claim repository for proof-backed decisions in `backend\src\services\supabase\insurerClaimRepository.ts`
 - [ ] T056 [US2] Extend presentation generation service for insurer eligibility purpose and minimum-claim policy checks in `backend\src\services\terminal3\presentationService.ts`
 - [ ] T057 [US2] Extend claim verification service for insurer eligibility outcomes in `backend\src\services\terminal3\claimVerificationService.ts`
 - [ ] T058 [US2] Implement claim decision route and insurer role enforcement in `backend\src\routes\claims.ts`

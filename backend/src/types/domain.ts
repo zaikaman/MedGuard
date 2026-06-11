@@ -6,6 +6,8 @@ export type DelegationStatus = "active" | "expired" | "revoked";
 export type ProofRequestStatus = "pending" | "approved" | "denied" | "expired" | "verified" | "failed";
 export type PresentationStatus = "generated" | "verified" | "rejected" | "revoked";
 export type VerificationResult = "accepted" | "denied" | "unverifiable" | "expired" | "revoked";
+export type InsurerClaimStatus = "received" | "approved" | "denied" | "needs_review";
+export type InsurerClaimDecisionStatus = Exclude<InsurerClaimStatus, "received">;
 export type AuditSeverity = "info" | "warning" | "critical";
 
 export interface Profile {
@@ -74,6 +76,18 @@ export interface PresentationProof {
   t3Reference: string;
   verificationStatus: PresentationStatus;
   expiresAt: string;
+}
+
+export interface InsurerClaim {
+  id: string;
+  insurerProfileId: string;
+  patientProfileId: string;
+  presentationProofId: string;
+  claimReference: string;
+  status: InsurerClaimStatus;
+  decisionReason: string | null;
+  decidedAt: string | null;
+  createdAt: string;
 }
 
 export interface AuditEvent {

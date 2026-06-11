@@ -2,6 +2,7 @@ import type {
   AgentIdentity,
   CredentialHash,
   Delegation,
+  InsurerClaim,
   PresentationProof,
   ProofRequest,
   VerificationResult,
@@ -91,5 +92,19 @@ export function mapClaimVerification(row: Record<string, any>): {
     result: row.result,
     reason: row.reason,
     verifiedAt: row.verified_at,
+  };
+}
+
+export function mapInsurerClaim(row: Record<string, any>): InsurerClaim {
+  return {
+    id: row.id,
+    insurerProfileId: row.insurer_profile_id,
+    patientProfileId: row.patient_profile_id,
+    presentationProofId: row.presentation_proof_id,
+    claimReference: row.claim_reference,
+    status: row.status,
+    decisionReason: row.decision_reason,
+    decidedAt: row.decided_at,
+    createdAt: row.created_at,
   };
 }

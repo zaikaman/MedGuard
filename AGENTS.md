@@ -1,1 +1,2 @@
 - All code written must be production ready, no mock, or fake, or hard code anywhere.
+- For docs on how to use Terminal 3, do web search on this link: https://docs.terminal3.io/intro/about-t3
