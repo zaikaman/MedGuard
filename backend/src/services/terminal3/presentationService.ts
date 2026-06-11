@@ -12,22 +12,45 @@ import {
 import { getAgentById, getAgentForProfile } from "./agentRegistrationService.js";
 import { terminal3Client, type Terminal3Client } from "./terminal3Client.js";
 
-export interface GenerateClinicPresentationInput {
+type RecipientPresentationRole = "clinic" | "insurer";
+
+export interface GeneratePresentationInput {
   requesterProfileId: string;
-  requesterRole: "clinic";
+  requesterRole: RecipientPresentationRole;
   patientProfileId: string;
   delegationId: string;
   requestedClaimType: string;
   purpose: string;
 }
 
+export type GenerateClinicPresentationInput = GeneratePresentationInput & { requesterRole: "clinic" };
+export type GenerateInsurerPresentationInput = GeneratePresentationInput & { requesterRole: "insurer" };
+
+const insurerMinimumClaimTypes = new Set(["eligibility", "coverage"]);
+const blockedInsurerClaimTerms = ["diagnosis", "medication", "medical_record", "raw_record", "lab_result"];
+
 export async function generateClinicPresentation(
   input: GenerateClinicPresentationInput,
   client: Terminal3Client = terminal3Client,
 ): Promise<PresentationProof> {
+  return generateRecipientPresentation(input, client);
+}
+
+export async function generateInsurerPresentation(
+  input: GenerateInsurerPresentationInput,
+  client: Terminal3Client = terminal3Client,
+): Promise<PresentationProof> {
+  assertMinimumInsurerClaimPolicy(input.requestedClaimType, input.purpose);
+  return generateRecipientPresentation(input, client);
+}
+
+async function generateRecipientPresentation(
+  input: GeneratePresentationInput,
+  client: Terminal3Client,
+): Promise<PresentationProof> {
   const requesterAgent = await getAgentForProfile(input.requesterProfileId, input.requesterRole);
   if (!requesterAgent) {
-    throw new ApiError(409, "REQUESTER_AGENT_REQUIRED", "Register the clinic agent before requesting a proof");
+    throw new ApiError(409, "REQUESTER_AGENT_REQUIRED", `Register the ${input.requesterRole} agent before requesting a proof`);
   }
 
   const proofRequest = await createProofRequest({
@@ -112,6 +135,35 @@ export async function generateClinicPresentation(
   });
 
   return presentation;
+}
+
+function assertMinimumInsurerClaimPolicy(requestedClaimType: string, purpose: string): void {
+  const normalizedClaimType = normalizePolicyToken(requestedClaimType);
+  const normalizedPurpose = normalizePolicyToken(purpose);
+
+  if (!insurerMinimumClaimTypes.has(normalizedClaimType)) {
+    throw new ApiError(
+      403,
+      "MINIMUM_CLAIM_POLICY_DENIED",
+      "Insurer requests must use a minimum eligibility or coverage claim",
+    );
+  }
+
+  if (!normalizedPurpose.includes("eligibility") && !normalizedPurpose.includes("coverage")) {
+    throw new ApiError(
+      403,
+      "INSURER_PURPOSE_DENIED",
+      "Insurer proof purpose must be limited to eligibility or coverage",
+    );
+  }
+
+  if (blockedInsurerClaimTerms.some((term) => normalizedClaimType.includes(term))) {
+    throw new ApiError(403, "RAW_RECORD_SCOPE_DENIED", "Insurer proof requests cannot target raw medical record facts");
+  }
+}
+
+function normalizePolicyToken(value: string): string {
+  return value.trim().toLowerCase().replace(/\s+/g, "_");
 }
 
 function computePresentationExpiry(delegationExpiresAt: string, credentialExpiresAt: string | null): string {
