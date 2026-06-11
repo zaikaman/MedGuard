@@ -117,7 +117,7 @@
 - [x] T059 [US2] Emit audit events for insurer request, overreach denial, eligibility verification, and claim decision outcomes in `backend\src\services\audit\claimAuditEvents.ts`
 - [ ] T060 [P] [US2] Implement insurer dashboard eligibility request UI in `frontend\src\dashboards\insurer\InsurerEligibilityPage.tsx`
 - [ ] T061 [P] [US2] Implement insurer claim decision UI with approved, denied, needs-review, loading, and error states in `frontend\src\dashboards\insurer\InsurerClaimDecisionPanel.tsx`
-- [ ] T062 [US2] Add frontend API hooks for insurer presentations and claim decisions in `frontend\src\features\claims\useInsurerClaimFlow.ts`
+- [x] T062 [US2] Add frontend API hooks for insurer presentations and claim decisions in `frontend\src\features\claims\useInsurerClaimFlow.ts`
 - [ ] T063 [US2] Show patient notification state for insurer policy denial without revealing extra facts in `frontend\src\dashboards\patient\PatientDenialNotifications.tsx`
 - [ ] T064 [US2] Measure insurer proof decision latency and denied-request error rates in `backend\tests\performance\insurerProofDecision.performance.test.ts`
 
