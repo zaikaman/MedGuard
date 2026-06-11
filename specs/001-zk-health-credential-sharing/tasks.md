@@ -47,8 +47,8 @@
 - [x] T021 Implement audit event writer that strips raw records and PII from metadata in `backend\src\services\audit\auditService.ts`
 - [x] T022 [P] Implement shared backend domain types for profiles, agents, credentials, proofs, delegations, claims, referrals, and audit events in `backend\src\types\domain.ts`
 - [x] T023 [P] Implement frontend Supabase client and typed API client foundation in `frontend\src\lib\supabase.ts` and `frontend\src\lib\api\client.ts`
-- [ ] T024 Implement frontend email OTP request/verification auth provider, protected route wrapper, and role redirect shell in `frontend\src\auth\AuthProvider.tsx` and `frontend\src\routes\ProtectedRoute.tsx`
-- [ ] T025 [P] Implement shared application layout primitives for equal-fidelity dashboards in `frontend\src\components\AppLayout.tsx` and `frontend\src\styles\theme.css`
+- [x] T024 Implement frontend email OTP request/verification auth provider, protected route wrapper, and role redirect shell in `frontend\src\auth\AuthProvider.tsx` and `frontend\src\routes\ProtectedRoute.tsx`
+- [x] T025 [P] Implement shared application layout primitives for equal-fidelity dashboards in `frontend\src\components\AppLayout.tsx` and `frontend\src\styles\theme.css`
 - [x] T026 [P] Add performance measurement helpers for proof decision, revocation, and audit visibility timing in `backend\tests\performance\metrics.ts`
 
 **Checkpoint**: Foundation ready. User story implementation can now begin in priority order or in parallel by separate developers.
