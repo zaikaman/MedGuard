@@ -15,41 +15,41 @@
 
 **Purpose**: Create the two-service TypeScript workspace, test tooling, environment templates, and deployment scaffolding.
 
-- [ ] T001 Create implementation directories in `backend\src\`, `backend\tests\`, `frontend\src\`, `frontend\tests\`, `supabase\migrations\`, and `supabase\tests\`
-- [ ] T002 Initialize backend TypeScript package, scripts, and runtime dependencies in `backend\package.json` and `backend\tsconfig.json`
-- [ ] T003 Initialize frontend React 18 + Vite package, scripts, and dependencies in `frontend\package.json`, `frontend\tsconfig.json`, and `frontend\vite.config.ts`
-- [ ] T004 [P] Configure backend Vitest/Supertest coverage in `backend\vitest.config.ts`
-- [ ] T005 [P] Configure frontend Vitest, React Testing Library, and Playwright coverage in `frontend\vitest.config.ts` and `frontend\playwright.config.ts`
-- [ ] T006 [P] Add local environment templates with only public frontend variables in `backend\.env.example` and `frontend\.env.example`
-- [ ] T007 [P] Add Heroku backend and Vercel frontend deployment configuration in `Procfile` and `docs\deployment\heroku.md` and `docs\deployment\vercel.md`
+- [x] T001 Create implementation directories in `backend\src\`, `backend\tests\`, `frontend\src\`, `frontend\tests\`, `supabase\migrations\`, and `supabase\tests\`
+- [x] T002 Initialize backend TypeScript package, scripts, and runtime dependencies in `backend\package.json` and `backend\tsconfig.json`
+- [x] T003 Initialize frontend React 18 + Vite package, scripts, and dependencies in `frontend\package.json`, `frontend\tsconfig.json`, and `frontend\vite.config.ts`
+- [x] T004 [P] Configure backend Vitest/Supertest coverage in `backend\vitest.config.ts`
+- [x] T005 [P] Configure frontend Vitest, React Testing Library, and Playwright coverage in `frontend\vitest.config.ts` and `frontend\playwright.config.ts`
+- [x] T006 [P] Add local environment templates with only public frontend variables in `backend\.env.example` and `frontend\.env.example`
+- [x] T007 [P] Add Heroku backend and Vercel frontend deployment configuration in `Procfile` and `docs\deployment\heroku.md` and `docs\deployment\vercel.md`
 
 ---
 
 ## Phase 2: Foundational (Blocking Prerequisites)
 
-**Purpose**: Establish schema, auth, API boundaries, Terminal 3 isolation, shared UI shell, and test harnesses that all stories require.
+**Purpose**: Establish schema, email OTP auth, API boundaries, Terminal 3 isolation, shared UI shell, and test harnesses that all stories require.
 
 **Critical**: No user story work should begin until this phase is complete.
 
-- [ ] T008 Create Supabase enum types and metadata tables from `data-model.md` in `supabase\migrations\001_initial_metadata.sql`
-- [ ] T009 Create Supabase RLS policies for profiles, agents, credentials, delegations, proofs, claims, referrals, and audit events in `supabase\migrations\002_rls_policies.sql`
-- [ ] T010 [P] Create non-sensitive development seed data for patient, clinic, insurer, and credential metadata in `supabase\seed.sql`
-- [ ] T011 [P] Add Supabase RLS policy test harness in `supabase\tests\rls.test.sql`
-- [ ] T012 [P] Add OpenAPI contract test fixture copied from `specs\001-zk-health-credential-sharing\contracts\openapi.yaml` to `backend\tests\contract\openapi.yaml`
-- [ ] T013 Create Express app and route mounting structure in `backend\src\app.ts` and `backend\src\server.ts`
-- [ ] T014 [P] Implement typed environment validation for Supabase, Terminal 3, CORS, and port values in `backend\src\config\env.ts`
-- [ ] T015 [P] Implement Supabase anon and service-role clients in `backend\src\services\supabase\client.ts`
-- [ ] T016 Implement Supabase JWT authentication middleware in `backend\src\middleware\requireAuth.ts`
-- [ ] T017 Implement role authorization middleware for patient, clinic, and insurer routes in `backend\src\middleware\requireRole.ts`
-- [ ] T018 [P] Implement shared request validation and error response helpers in `backend\src\schemas\common.ts` and `backend\src\middleware\errorHandler.ts`
-- [ ] T019 Implement Terminal 3 SDK boundary wrapper with no browser-exposed secrets in `backend\src\services\terminal3\terminal3Client.ts`
-- [ ] T020 Implement policy evaluation primitives for recipient identity, purpose, claim type, credential state, and delegation state in `backend\src\services\policies\policyEvaluator.ts`
-- [ ] T021 Implement audit event writer that strips raw records and PII from metadata in `backend\src\services\audit\auditService.ts`
-- [ ] T022 [P] Implement shared backend domain types for profiles, agents, credentials, proofs, delegations, claims, referrals, and audit events in `backend\src\types\domain.ts`
-- [ ] T023 [P] Implement frontend Supabase client and typed API client foundation in `frontend\src\lib\supabase.ts` and `frontend\src\lib\api\client.ts`
-- [ ] T024 Implement frontend auth provider, protected route wrapper, and role redirect shell in `frontend\src\auth\AuthProvider.tsx` and `frontend\src\routes\ProtectedRoute.tsx`
+- [x] T008 Create Supabase enum types and metadata tables from `data-model.md` in `supabase\migrations\001_initial_metadata.sql`
+- [x] T009 Create Supabase RLS policies for profiles, agents, credentials, delegations, proofs, claims, referrals, and audit events in `supabase\migrations\002_rls_policies.sql`
+- [x] T010 [P] Create non-sensitive development seed data for patient, clinic, insurer, and credential metadata in `supabase\seed.sql`
+- [x] T011 [P] Add Supabase RLS policy test harness in `supabase\tests\rls.test.sql`
+- [x] T012 [P] Add OpenAPI contract test fixture copied from `specs\001-zk-health-credential-sharing\contracts\openapi.yaml` to `backend\tests\contract\openapi.yaml`
+- [x] T013 Create Express app and route mounting structure in `backend\src\app.ts` and `backend\src\server.ts`
+- [x] T014 [P] Implement typed environment validation for Supabase, Terminal 3, CORS, and port values in `backend\src\config\env.ts`
+- [x] T015 [P] Implement Supabase anon and service-role clients in `backend\src\services\supabase\client.ts`
+- [x] T016 Implement Supabase email OTP JWT authentication middleware with profile role lookup in `backend\src\middleware\requireAuth.ts`
+- [x] T017 Implement role authorization middleware for patient, clinic, and insurer routes in `backend\src\middleware\requireRole.ts`
+- [x] T018 [P] Implement shared request validation and error response helpers in `backend\src\schemas\common.ts` and `backend\src\middleware\errorHandler.ts`
+- [x] T019 Implement Terminal 3 SDK boundary wrapper with no browser-exposed secrets in `backend\src\services\terminal3\terminal3Client.ts`
+- [x] T020 Implement policy evaluation primitives for recipient identity, purpose, claim type, credential state, and delegation state in `backend\src\services\policies\policyEvaluator.ts`
+- [x] T021 Implement audit event writer that strips raw records and PII from metadata in `backend\src\services\audit\auditService.ts`
+- [x] T022 [P] Implement shared backend domain types for profiles, agents, credentials, proofs, delegations, claims, referrals, and audit events in `backend\src\types\domain.ts`
+- [x] T023 [P] Implement frontend Supabase client and typed API client foundation in `frontend\src\lib\supabase.ts` and `frontend\src\lib\api\client.ts`
+- [ ] T024 Implement frontend email OTP request/verification auth provider, protected route wrapper, and role redirect shell in `frontend\src\auth\AuthProvider.tsx` and `frontend\src\routes\ProtectedRoute.tsx`
 - [ ] T025 [P] Implement shared application layout primitives for equal-fidelity dashboards in `frontend\src\components\AppLayout.tsx` and `frontend\src\styles\theme.css`
-- [ ] T026 [P] Add performance measurement helpers for proof decision, revocation, and audit visibility timing in `backend\tests\performance\metrics.ts`
+- [x] T026 [P] Add performance measurement helpers for proof decision, revocation, and audit visibility timing in `backend\tests\performance\metrics.ts`
 
 **Checkpoint**: Foundation ready. User story implementation can now begin in priority order or in parallel by separate developers.
 
@@ -271,4 +271,3 @@ Task: "T078 Implement shared live audit log panel with filters, empty, loading, 
 2. One developer owns frontend shell and shared dashboard components.
 3. After Phase 2, split by story: clinic flow, insurer flow, and delegation/audit flow.
 4. Integrate through the OpenAPI contract and shared domain types.
-

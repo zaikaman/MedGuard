@@ -8,10 +8,12 @@
 ## Summary
 
 Build MedGuard as a web application with a React + Vite frontend and a Node.js +
-Express backend. Supabase Auth handles real users and roles (`patient`, `clinic`,
-`insurer`), while the Express backend is the only application boundary allowed
-to call the Terminal 3 SDK. On signup, the backend registers separate Terminal 3
-DIDs for Patient, Clinic, and Insurer agents as appropriate for the user's role.
+Express backend. Supabase Auth handles real users through email OTP login: users
+submit an email address, verify the one-time code, then continue with a role
+profile (`patient`, `clinic`, `insurer`). The Express backend is the only
+application boundary allowed to call the Terminal 3 SDK. After OTP onboarding,
+the backend registers separate Terminal 3 DIDs for Patient, Clinic, and Insurer
+agents as appropriate for the user's profile role.
 
 The backend exposes REST endpoints for agent identity registration, credential
 issuance metadata, selective ZK presentation generation, inter-agent claim
@@ -25,7 +27,7 @@ Clinic/Insurer dashboards.
 
 **Language/Version**: TypeScript on Node.js >=18; React 18 + Vite frontend; Express backend  
 **Primary Dependencies**: React, Vite, React Router, Supabase JS client, Node.js, Express, Terminal 3 `@terminal3/t3n-sdk`, Zod or equivalent validation, Heroku (backend) + Vercel (frontend) deployment runtimes  
-**Storage**: Supabase PostgreSQL for metadata, credential hashes, proof records, delegation records, referrals, claim decisions, and audit events; Supabase Auth for users; T3N for raw health records/PII and T3 agent execution context  
+**Storage**: Supabase PostgreSQL for role profiles, agent metadata, credential hashes, proof records, delegation records, referrals, claim decisions, and audit events; Supabase Auth email OTP for users; T3N for raw health records/PII and T3 agent execution context  
 **Testing**: Vitest + React Testing Library for frontend units/components; Playwright for role dashboard flows; Node test runner or Vitest + Supertest for Express APIs; Supabase RLS policy tests; contract tests against OpenAPI examples; mocked Terminal 3 SDK integration tests plus testnet smoke tests when tokens are available  
 **Target Platform**: Web app with Express backend deployed to Heroku and React + Vite frontend deployed to Vercel, with environment-separated config for local, staging, and production  
 **Project Type**: Web application with separate frontend and backend services  
@@ -49,7 +51,7 @@ Clinic/Insurer dashboards.
   explicit loading/empty/error/success states.
 - **Performance Requirements**: PASS. Proof decision, revocation, and audit
   visibility targets from the spec are retained and mapped to measurable tests.
-- **Security, Privacy, Reliability**: PASS. Supabase Auth + Express RBAC +
+- **Security, Privacy, Reliability**: PASS. Supabase email OTP Auth + Express RBAC +
   Supabase RLS are required. Raw health records remain in T3N; Supabase stores
   only hashes, metadata, policy state, proof artifacts, and audit events.
 

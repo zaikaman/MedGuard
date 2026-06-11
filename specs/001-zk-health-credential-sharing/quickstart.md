@@ -3,7 +3,7 @@
 ## Prerequisites
 
 - Node.js >=18
-- Supabase project with Auth and Realtime enabled
+- Supabase project with email OTP Auth and Realtime enabled
 - Terminal 3 testnet developer key and DID from the Terminal 3 claim flow
 - Heroku account for backend deployment
 - Vercel account for frontend deployment
@@ -39,12 +39,14 @@ Backend secrets must never be exposed through Vite variables.
 
 ## 2. Initialize Supabase
 
-1. Create enum types for `role`, agent status, delegation status, proof status,
+1. Enable Supabase email OTP sign-in and configure the project email provider or
+   Supabase development email delivery.
+2. Create enum types for `role`, agent status, delegation status, proof status,
    verification status, claim status, and audit severity.
-2. Apply migrations for tables in `data-model.md`.
-3. Enable RLS on every table.
-4. Add policies matching the RLS summary in `data-model.md`.
-5. Enable Realtime for `audit_events`.
+3. Apply migrations for tables in `data-model.md`.
+4. Enable RLS on every table.
+5. Add policies matching the RLS summary in `data-model.md`.
+6. Enable Realtime for `audit_events`.
 
 ## 3. Start Local Services
 
@@ -66,11 +68,14 @@ npm run dev
 
 ## 4. Verify Role Onboarding
 
-1. Sign up as a patient using Supabase Auth.
-2. Confirm the backend registers a Patient Agent DID through Terminal 3 and
+1. Enter an email address and select the patient role.
+2. Submit the Supabase email OTP request.
+3. Verify the one-time code from email and confirm the app creates a patient
+   profile row for the authenticated user.
+4. Confirm the backend registers a Patient Agent DID through Terminal 3 and
    stores only DID metadata in Supabase.
-3. Repeat signup for clinic and insurer roles.
-4. Confirm each user lands on the correct dashboard and cannot access another
+5. Repeat OTP onboarding for clinic and insurer roles.
+6. Confirm each user lands on the correct dashboard and cannot access another
    role's routes.
 
 ## 5. Verify Core Flows
@@ -120,8 +125,8 @@ Required checks:
 3. Configure frontend public variables (`VITE_SUPABASE_URL`, `VITE_SUPABASE_ANON_KEY`, `VITE_API_BASE_URL`) in Vercel Environment Variables.
 4. Set Heroku pipelines for staging and production environments.
 5. Run Supabase migrations before promoting to production.
-6. Smoke test signup, DID registration, proof request, delegation revocation,
-   claim decision, and live audit log.
+6. Smoke test email OTP login, role profile creation, DID registration, proof
+   request, delegation revocation, claim decision, and live audit log.
 
 ## 8. Bounty Documentation Findings
 

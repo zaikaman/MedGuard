@@ -11,12 +11,12 @@ non-sensitive display labels only.
 
 ### profiles
 
-User profile attached to Supabase Auth.
+User profile attached to a Supabase Auth email OTP identity.
 
 | Field | Type | Rules |
 |-------|------|-------|
 | id | uuid | Primary key; equals Supabase Auth user id |
-| role | enum | `patient`, `clinic`, or `insurer`; immutable after onboarding without admin action |
+| role | enum | `patient`, `clinic`, or `insurer`; selected during OTP onboarding and immutable after profile creation without admin action |
 | display_name | text | Required; no medical detail |
 | organization_name | text | Required for clinic/insurer, optional for patient |
 | created_at | timestamptz | Required |

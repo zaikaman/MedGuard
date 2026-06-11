@@ -22,13 +22,13 @@ A multi-agent healthcare data platform using Terminal 3 Agent Auth SDK for zero-
 
 - **Backend**: Express API on Heroku — handles auth, Terminal 3 SDK calls, policy, audit
 - **Frontend**: React 18 + Vite on Vercel — three role dashboards (patient, clinic, insurer)
-- **Supabase**: Auth, PostgreSQL metadata store, RLS policies, real-time audit events
+- **Supabase**: Email OTP Auth, PostgreSQL metadata store, RLS policies, real-time audit events
 - **Terminal 3**: TEE-secured agent DIDs, ZK proofs, raw health record boundary
 
 ## Prerequisites
 
 - Node.js >=18 (see `.nvmrc`)
-- Supabase project with Auth + Realtime enabled
+- Supabase project with email OTP Auth + Realtime enabled
 - Terminal 3 testnet developer key
 
 ## Quick Start

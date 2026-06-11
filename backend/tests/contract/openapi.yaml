@@ -1,0 +1,521 @@
+openapi: 3.1.0
+info:
+  title: MedGuard ZK Health Credential Sharing API
+  version: 0.1.0
+  description: REST contract for MedGuard backend. All endpoints require Supabase Auth JWT unless noted.
+servers:
+  - url: http://localhost:4000/api
+    description: Local development
+security:
+  - bearerAuth: []
+paths:
+  /agents/register:
+    post:
+      summary: Register the current user's role-specific Terminal 3 agent DID
+      operationId: registerAgent
+      tags: [Agents]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/RegisterAgentRequest'
+      responses:
+        '201':
+          description: Agent registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentIdentity'
+        '409':
+          description: Agent already registered
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /agents/me:
+    get:
+      summary: Get current user's agent metadata
+      operationId: getMyAgent
+      tags: [Agents]
+      responses:
+        '200':
+          description: Current agent metadata
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentIdentity'
+  /credentials:
+    get:
+      summary: List patient credential metadata
+      operationId: listCredentials
+      tags: [Credentials]
+      responses:
+        '200':
+          description: Credential metadata visible to the current user
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CredentialHash'
+  /credentials/issue:
+    post:
+      summary: Issue or import credential metadata without raw records
+      operationId: issueCredential
+      tags: [Credentials]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/IssueCredentialRequest'
+      responses:
+        '201':
+          description: Credential metadata stored
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CredentialHash'
+  /delegations:
+    get:
+      summary: List delegations visible to current user
+      operationId: listDelegations
+      tags: [Delegations]
+      responses:
+        '200':
+          description: Delegations
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Delegation'
+    post:
+      summary: Create patient delegation for a clinic or insurer agent
+      operationId: createDelegation
+      tags: [Delegations]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateDelegationRequest'
+      responses:
+        '201':
+          description: Delegation created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Delegation'
+  /delegations/{delegationId}/revoke:
+    post:
+      summary: Revoke delegated access
+      operationId: revokeDelegation
+      tags: [Delegations]
+      parameters:
+        - $ref: '#/components/parameters/DelegationId'
+      responses:
+        '200':
+          description: Delegation revoked
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Delegation'
+  /presentations/generate:
+    post:
+      summary: Generate a selective ZK presentation for an allowed proof request
+      operationId: generatePresentation
+      tags: [Presentations]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GeneratePresentationRequest'
+      responses:
+        '201':
+          description: Presentation generated
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PresentationProof'
+        '403':
+          description: Request blocked by policy or role
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+  /claims/verify:
+    post:
+      summary: Verify an inter-agent claim presentation
+      operationId: verifyClaim
+      tags: [Claims]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VerifyClaimRequest'
+      responses:
+        '200':
+          description: Verification result
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClaimVerification'
+  /claims/{claimId}/decision:
+    post:
+      summary: Insurer approves or denies a claim
+      operationId: decideClaim
+      tags: [Claims]
+      parameters:
+        - name: claimId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ClaimDecisionRequest'
+      responses:
+        '200':
+          description: Claim decision stored
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InsurerClaim'
+  /referrals:
+    post:
+      summary: Clinic submits a referral based on approved presentation metadata
+      operationId: submitReferral
+      tags: [Referrals]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateReferralRequest'
+      responses:
+        '201':
+          description: Referral submitted
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Referral'
+  /audit-events:
+    get:
+      summary: List audit events visible to current role
+      operationId: listAuditEvents
+      tags: [Audit]
+      parameters:
+        - name: since
+          in: query
+          schema:
+            type: string
+            format: date-time
+        - name: eventType
+          in: query
+          schema:
+            type: string
+        - name: patientId
+          in: query
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Audit events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AuditEvent'
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    DelegationId:
+      name: delegationId
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+  schemas:
+    RegisterAgentRequest:
+      type: object
+      required: [role]
+      properties:
+        role:
+          $ref: '#/components/schemas/Role'
+    IssueCredentialRequest:
+      type: object
+      required: [credentialType, issuerDid, credentialHash, t3Reference]
+      properties:
+        credentialType:
+          type: string
+        issuerDid:
+          type: string
+        credentialHash:
+          type: string
+        t3Reference:
+          type: string
+        expiresAt:
+          type: string
+          format: date-time
+    CreateDelegationRequest:
+      type: object
+      required: [recipientProfileId, purpose, allowedClaimTypes, allowedFunctions, expiresAt]
+      properties:
+        recipientProfileId:
+          type: string
+          format: uuid
+        purpose:
+          type: string
+        allowedClaimTypes:
+          type: array
+          minItems: 1
+          items:
+            type: string
+        allowedFunctions:
+          type: array
+          minItems: 1
+          items:
+            type: string
+        allowedHosts:
+          type: array
+          items:
+            type: string
+        expiresAt:
+          type: string
+          format: date-time
+    GeneratePresentationRequest:
+      type: object
+      required: [patientProfileId, delegationId, requestedClaimType, purpose]
+      properties:
+        patientProfileId:
+          type: string
+          format: uuid
+        delegationId:
+          type: string
+          format: uuid
+        requestedClaimType:
+          type: string
+        purpose:
+          type: string
+    VerifyClaimRequest:
+      type: object
+      required: [presentationProofId]
+      properties:
+        presentationProofId:
+          type: string
+          format: uuid
+    ClaimDecisionRequest:
+      type: object
+      required: [status]
+      properties:
+        status:
+          type: string
+          enum: [approved, denied, needs_review]
+        decisionReason:
+          type: string
+    CreateReferralRequest:
+      type: object
+      required: [patientProfileId, referralType]
+      properties:
+        patientProfileId:
+          type: string
+          format: uuid
+        presentationProofId:
+          type: string
+          format: uuid
+        referralType:
+          type: string
+        notes:
+          type: string
+          description: Operational notes only; raw health records are forbidden.
+    Role:
+      type: string
+      enum: [patient, clinic, insurer]
+    AgentIdentity:
+      type: object
+      required: [id, profileId, role, t3Did, status]
+      properties:
+        id:
+          type: string
+          format: uuid
+        profileId:
+          type: string
+          format: uuid
+        role:
+          $ref: '#/components/schemas/Role'
+        t3Did:
+          type: string
+        status:
+          type: string
+          enum: [pending, active, suspended, failed]
+    CredentialHash:
+      type: object
+      required: [id, patientProfileId, credentialType, credentialHash, status]
+      properties:
+        id:
+          type: string
+          format: uuid
+        patientProfileId:
+          type: string
+          format: uuid
+        credentialType:
+          type: string
+        issuerDid:
+          type: string
+        credentialHash:
+          type: string
+        status:
+          type: string
+          enum: [active, expired, revoked, superseded]
+    Delegation:
+      type: object
+      required: [id, patientProfileId, recipientProfileId, purpose, allowedClaimTypes, status, expiresAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        patientProfileId:
+          type: string
+          format: uuid
+        recipientProfileId:
+          type: string
+          format: uuid
+        purpose:
+          type: string
+        allowedClaimTypes:
+          type: array
+          items:
+            type: string
+        status:
+          type: string
+          enum: [active, expired, revoked]
+        expiresAt:
+          type: string
+          format: date-time
+        revokedAt:
+          type: string
+          format: date-time
+    PresentationProof:
+      type: object
+      required: [id, proofRequestId, presentationHash, verificationStatus, expiresAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        proofRequestId:
+          type: string
+          format: uuid
+        presentationHash:
+          type: string
+        verificationStatus:
+          type: string
+          enum: [generated, verified, rejected, revoked]
+        expiresAt:
+          type: string
+          format: date-time
+    ClaimVerification:
+      type: object
+      required: [id, presentationProofId, result, verifiedAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        presentationProofId:
+          type: string
+          format: uuid
+        result:
+          type: string
+          enum: [accepted, denied, unverifiable, expired, revoked]
+        reason:
+          type: string
+        verifiedAt:
+          type: string
+          format: date-time
+    InsurerClaim:
+      type: object
+      required: [id, insurerProfileId, patientProfileId, status]
+      properties:
+        id:
+          type: string
+          format: uuid
+        insurerProfileId:
+          type: string
+          format: uuid
+        patientProfileId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          enum: [received, approved, denied, needs_review]
+        decisionReason:
+          type: string
+    Referral:
+      type: object
+      required: [id, clinicProfileId, patientProfileId, referralType, status]
+      properties:
+        id:
+          type: string
+          format: uuid
+        clinicProfileId:
+          type: string
+          format: uuid
+        patientProfileId:
+          type: string
+          format: uuid
+        referralType:
+          type: string
+        status:
+          type: string
+          enum: [draft, submitted, accepted, rejected]
+    AuditEvent:
+      type: object
+      required: [id, eventType, severity, summary, createdAt]
+      properties:
+        id:
+          type: string
+          format: uuid
+        actorProfileId:
+          type: string
+          format: uuid
+        patientProfileId:
+          type: string
+          format: uuid
+        targetProfileId:
+          type: string
+          format: uuid
+        eventType:
+          type: string
+        severity:
+          type: string
+          enum: [info, warning, critical]
+        summary:
+          type: string
+        metadata:
+          type: object
+          additionalProperties: true
+        createdAt:
+          type: string
+          format: date-time
+    Error:
+      type: object
+      required: [code, message]
+      properties:
+        code:
+          type: string
+        message:
+          type: string
