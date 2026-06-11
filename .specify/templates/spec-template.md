@@ -69,7 +69,9 @@
 
 <!--
   ACTION REQUIRED: The content in this section represents placeholders.
-  Fill them out with the right edge cases.
+  Fill them out with the right edge cases, including invalid input, missing or
+  stale data, permission boundaries, recoverable failures, and sensitive-data
+  handling where relevant.
 -->
 
 - What happens when [boundary condition]?
@@ -94,6 +96,23 @@
 
 - **FR-006**: System MUST authenticate users via [NEEDS CLARIFICATION: auth method not specified - email/password, SSO, OAuth?]
 - **FR-007**: System MUST retain user data for [NEEDS CLARIFICATION: retention period not specified]
+
+### User Experience Requirements *(include for user-facing work)*
+
+- **UX-001**: User-facing flows MUST define loading, empty, validation, error,
+  success, and recovery states.
+- **UX-002**: Interfaces MUST remain readable and operable at supported viewport
+  sizes and with keyboard navigation where applicable.
+- **UX-003**: Terminology, controls, and feedback MUST match established product
+  patterns unless the specification justifies a new pattern.
+
+### Performance Requirements
+
+- **PR-001**: Feature MUST define measurable performance expectations, such as
+  p95 latency, page load time, interaction response time, memory use, bundle
+  impact, query count, or background job duration.
+- **PR-002**: Performance-sensitive flows MUST define how measurements will be
+  collected or explain why measurement is not applicable.
 
 ### Key Entities *(include if feature involves data)*
 

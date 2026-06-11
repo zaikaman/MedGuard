@@ -31,7 +31,21 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+- **Code Quality**: Identify ownership boundaries, affected modules, data
+  contracts, and any new abstractions or dependencies. Justify complexity that
+  is not already part of the project.
+- **Testing Standards**: Define automated tests for changed behavior, including
+  unit, integration, contract, end-to-end, or visual coverage as appropriate.
+  Document any omitted tests with a concrete reason and follow-up.
+- **User Experience Consistency**: For user-facing work, define required states
+  for loading, empty, validation, error, success, accessibility, and responsive
+  behavior. Confirm alignment with existing terminology and interaction
+  patterns.
+- **Performance Requirements**: State measurable goals and the measurement
+  approach, such as p95 latency, load time, interaction latency, memory, bundle
+  impact, query count, or job duration.
+- **Security, Privacy, Reliability**: Identify sensitive data, authorization
+  boundaries, validation rules, logging/audit requirements, and failure modes.
 
 ## Project Structure
 
