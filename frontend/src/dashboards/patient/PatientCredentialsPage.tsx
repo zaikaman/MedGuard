@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { AppLayout, StatCard, StatusBadge, AuditLogRow } from "../../components/AppLayout";
 import { apiRequest, ApiClientError } from "../../lib/api/client";
 import { useAuth } from "../../auth/AuthProvider";
+import PatientDenialNotifications from "./PatientDenialNotifications";
 
 interface AgentIdentity {
   id: string;
@@ -150,6 +151,9 @@ export default function PatientCredentialsPage() {
 
   return (
     <AppLayout>
+      {/* Insurer denial notifications */}
+      <PatientDenialNotifications />
+
       {/* Stat Cards */}
       <div className="stats-grid">
         <StatCard title="Active credentials" value={activeCredentials} />

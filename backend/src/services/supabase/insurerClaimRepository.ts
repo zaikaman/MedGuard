@@ -38,6 +38,20 @@ export async function listInsurerClaims(insurerProfileId: string): Promise<Insur
   return (data ?? []).map(mapInsurerClaim);
 }
 
+export async function listInsurerClaimsForPatient(patientProfileId: string): Promise<InsurerClaim[]> {
+  const { data, error } = await supabaseAdmin
+    .from("insurer_claims")
+    .select("*")
+    .eq("patient_profile_id", patientProfileId)
+    .order("created_at", { ascending: false });
+
+  if (error) {
+    throw new Error(`Failed to list patient insurer claims: ${error.message}`);
+  }
+
+  return (data ?? []).map(mapInsurerClaim);
+}
+
 export async function getInsurerClaimForInsurer(
   claimId: string,
   insurerProfileId: string,

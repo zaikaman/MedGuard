@@ -2,8 +2,8 @@ import { Router } from "express";
 import { z } from "zod";
 import { requireAuth } from "../middleware/requireAuth.js";
 import { requireRole } from "../middleware/requireRole.js";
-import { ApiError, uuidSchema, validateBody } from "../schemas/common.js";
-import { decideInsurerClaim } from "../services/supabase/insurerClaimRepository.js";
+import { ApiError, uuidSchema, validateBody, nonEmptyString } from "../schemas/common.js";
+import { decideInsurerClaim, createInsurerClaim, listInsurerClaims, listInsurerClaimsForPatient } from "../services/supabase/insurerClaimRepository.js";
 import { verifyClinicClaim, verifyInsurerClaim } from "../services/terminal3/claimVerificationService.js";
 
 export const claimsRouter = Router();
@@ -14,6 +14,42 @@ const verifyClaimSchema = z.object({ presentationProofId: uuidSchema });
 const claimDecisionSchema = z.object({
   status: z.enum(["approved", "denied", "needs_review"]),
   decisionReason: z.string().trim().min(1).optional(),
+});
+const createClaimSchema = z.object({
+  patientProfileId: uuidSchema,
+  presentationProofId: uuidSchema,
+  claimReference: nonEmptyString,
+});
+
+claimsRouter.get("/", requireRole("insurer", "patient"), async (request, response, next) => {
+  try {
+    const auth = request.auth!;
+    if (auth.role === "insurer") {
+      const claims = await listInsurerClaims(auth.userId);
+      response.json(claims);
+    } else if (auth.role === "patient") {
+      const claims = await listInsurerClaimsForPatient(auth.userId);
+      response.json(claims);
+    } else {
+      throw new ApiError(403, "ROLE_FORBIDDEN", "Your role cannot list claims");
+    }
+  } catch (error) {
+    next(error);
+  }
+});
+
+claimsRouter.post("/", requireRole("insurer"), validateBody(createClaimSchema), async (request, response, next) => {
+  try {
+    const claim = await createInsurerClaim({
+      insurerProfileId: request.auth!.userId,
+      patientProfileId: request.body.patientProfileId,
+      presentationProofId: request.body.presentationProofId,
+      claimReference: request.body.claimReference,
+    });
+    response.status(201).json(claim);
+  } catch (error) {
+    next(error);
+  }
 });
 
 claimsRouter.post("/verify", requireRole("clinic", "insurer"), validateBody(verifyClaimSchema), async (request, response, next) => {
@@ -66,3 +102,4 @@ claimsRouter.post("/:claimId/decision", requireRole("insurer"), validateBody(cla
     next(error);
   }
 });
+
