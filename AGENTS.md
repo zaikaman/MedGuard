@@ -1,5 +1,1 @@
-<!-- SPECKIT START -->
-For additional context about technologies to be used, project structure,
-shell commands, and other important information, read:
-specs/001-zk-health-credential-sharing/plan.md
-<!-- SPECKIT END -->
+- All code written must be production ready, no mock, or fake, or hard code anywhere.

@@ -63,31 +63,31 @@
 
 ### Tests for User Story 1
 
-- [ ] T027 [P] [US1] Add contract tests for `POST /agents/register` and `GET /agents/me` in `backend\tests\contract\agents.contract.test.ts`
-- [ ] T028 [P] [US1] Add contract tests for `GET /credentials` and `POST /credentials/issue` in `backend\tests\contract\credentials.contract.test.ts`
-- [ ] T029 [P] [US1] Add contract tests for `POST /presentations/generate` and `POST /claims/verify` clinic cases in `backend\tests\contract\clinic-presentations.contract.test.ts`
-- [ ] T030 [P] [US1] Add unit tests for clinic proof policy approval, denial, expiry, malformed proof, and identity mismatch in `backend\tests\unit\clinicPolicyEvaluator.test.ts`
-- [ ] T031 [P] [US1] Add mocked Terminal 3 registration, presentation generation, and verification integration tests in `backend\tests\integration\terminal3ClinicFlow.test.ts`
-- [ ] T032 [P] [US1] Add RLS tests proving clinic users cannot read raw credential data or unrelated patient metadata in `supabase\tests\clinic_sharing_rls.test.sql`
+- [x] T027 [P] [US1] Add contract tests for `POST /agents/register` and `GET /agents/me` in `backend\tests\contract\agents.contract.test.ts`
+- [x] T028 [P] [US1] Add contract tests for `GET /credentials` and `POST /credentials/issue` in `backend\tests\contract\credentials.contract.test.ts`
+- [x] T029 [P] [US1] Add contract tests for `POST /presentations/generate` and `POST /claims/verify` clinic cases in `backend\tests\contract\clinic-presentations.contract.test.ts`
+- [x] T030 [P] [US1] Add unit tests for clinic proof policy approval, denial, expiry, malformed proof, and identity mismatch in `backend\tests\unit\clinicPolicyEvaluator.test.ts`
+- [x] T031 [P] [US1] Add mocked Terminal 3 registration, presentation generation, and verification integration tests in `backend\tests\integration\terminal3ClinicFlow.test.ts`
+- [x] T032 [P] [US1] Add RLS tests proving clinic users cannot read raw credential data or unrelated patient metadata in `supabase\tests\clinic_sharing_rls.test.sql`
 - [ ] T033 [P] [US1] Add Playwright flow for patient credential setup and clinic proof verification in `frontend\tests\e2e\clinic-proof-sharing.spec.ts`
 
 ### Implementation for User Story 1
 
-- [ ] T034 [P] [US1] Implement Terminal 3 role-specific agent registration service in `backend\src\services\terminal3\agentRegistrationService.ts`
-- [ ] T035 [US1] Implement agent registration and lookup routes in `backend\src\routes\agents.ts`
-- [ ] T036 [P] [US1] Implement credential metadata schemas and repository with hash/reference-only storage in `backend\src\schemas\credentials.ts` and `backend\src\services\supabase\credentialRepository.ts`
-- [ ] T037 [US1] Implement credential listing and issue/import routes in `backend\src\routes\credentials.ts`
-- [ ] T038 [P] [US1] Implement proof request and presentation metadata repository in `backend\src\services\supabase\proofRepository.ts`
-- [ ] T039 [US1] Implement clinic presentation generation service with delegation, purpose, credential status, and identity checks in `backend\src\services\terminal3\presentationService.ts`
-- [ ] T040 [US1] Implement presentation generation route for clinic proof requests in `backend\src\routes\presentations.ts`
-- [ ] T041 [P] [US1] Implement claim verification service for clinic proof outcomes in `backend\src\services\terminal3\claimVerificationService.ts`
-- [ ] T042 [US1] Implement claim verification route for accepted, denied, expired, revoked, and unverifiable states in `backend\src\routes\claims.ts`
-- [ ] T043 [US1] Emit audit events for clinic proof requested, approved, denied, and verified outcomes in `backend\src\services\audit\proofAuditEvents.ts`
-- [ ] T044 [P] [US1] Implement patient onboarding and credential metadata UI in `frontend\src\dashboards\patient\PatientCredentialsPage.tsx`
-- [ ] T045 [P] [US1] Implement clinic dashboard proof request form in `frontend\src\dashboards\clinic\ClinicProofRequestPage.tsx`
-- [ ] T046 [US1] Implement clinic proof result states for accepted, denied, expired, revoked, unverifiable, loading, and error states in `frontend\src\dashboards\clinic\ClinicProofResultPanel.tsx`
-- [ ] T047 [US1] Add frontend API hooks for agent, credential, presentation, and claim verification flows in `frontend\src\features\presentations\useClinicPresentationFlow.ts`
-- [ ] T048 [US1] Measure and assert 95% clinic proof decision visibility within 5 seconds in `backend\tests\performance\clinicProofDecision.performance.test.ts`
+- [x] T034 [P] [US1] Implement Terminal 3 role-specific agent registration service in `backend\src\services\terminal3\agentRegistrationService.ts`
+- [x] T035 [US1] Implement agent registration and lookup routes in `backend\src\routes\agents.ts`
+- [x] T036 [P] [US1] Implement credential metadata schemas and repository with hash/reference-only storage in `backend\src\schemas\credentials.ts` and `backend\src\services\supabase\credentialRepository.ts`
+- [x] T037 [US1] Implement credential listing and issue/import routes in `backend\src\routes\credentials.ts`
+- [x] T038 [P] [US1] Implement proof request and presentation metadata repository in `backend\src\services\supabase\proofRepository.ts`
+- [x] T039 [US1] Implement clinic presentation generation service with delegation, purpose, credential status, and identity checks in `backend\src\services\terminal3\presentationService.ts`
+- [x] T040 [US1] Implement presentation generation route for clinic proof requests in `backend\src\routes\presentations.ts`
+- [x] T041 [P] [US1] Implement claim verification service for clinic proof outcomes in `backend\src\services\terminal3\claimVerificationService.ts`
+- [x] T042 [US1] Implement claim verification route for accepted, denied, expired, revoked, and unverifiable states in `backend\src\routes\claims.ts`
+- [x] T043 [US1] Emit audit events for clinic proof requested, approved, denied, and verified outcomes in `backend\src\services\audit\proofAuditEvents.ts`
+- [x] T044 [P] [US1] Implement patient onboarding and credential metadata UI in `frontend\src\dashboards\patient\PatientCredentialsPage.tsx`
+- [x] T045 [P] [US1] Implement clinic dashboard proof request form in `frontend\src\dashboards\clinic\ClinicProofRequestPage.tsx`
+- [x] T046 [US1] Implement clinic proof result states for accepted, denied, expired, revoked, unverifiable, loading, and error states in `frontend\src\dashboards\clinic\ClinicProofResultPanel.tsx`
+- [x] T047 [US1] Add frontend API hooks for agent, credential, presentation, and claim verification flows in `frontend\src\features\presentations\useClinicPresentationFlow.ts`
+- [x] T048 [US1] Measure and assert 95% clinic proof decision visibility within 5 seconds in `backend\tests\performance\clinicProofDecision.performance.test.ts`
 
 **Checkpoint**: User Story 1 is independently functional and demoable as the MVP.
 
