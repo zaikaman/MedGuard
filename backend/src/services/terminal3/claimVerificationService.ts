@@ -9,22 +9,43 @@ import {
 import { getAgentForProfile } from "./agentRegistrationService.js";
 import { terminal3Client, type Terminal3Client } from "./terminal3Client.js";
 
-export interface VerifyClinicClaimInput {
+type ClaimVerifierRole = "clinic" | "insurer";
+
+export interface VerifyClaimInput {
   verifierProfileId: string;
-  verifierRole: "clinic";
+  verifierRole: ClaimVerifierRole;
   presentationProofId: string;
 }
 
+export type VerifyClinicClaimInput = VerifyClaimInput & { verifierRole: "clinic" };
+export type VerifyInsurerClaimInput = VerifyClaimInput & { verifierRole: "insurer" };
+
+const insurerEligibilityProofTypes = new Set(["eligibility", "coverage"]);
+
 export async function verifyClinicClaim(input: VerifyClinicClaimInput, client: Terminal3Client = terminal3Client) {
+  return verifyRecipientClaim(input, client);
+}
+
+export async function verifyInsurerClaim(input: VerifyInsurerClaimInput, client: Terminal3Client = terminal3Client) {
+  return verifyRecipientClaim(input, client, assertInsurerEligibilityProof);
+}
+
+async function verifyRecipientClaim(
+  input: VerifyClaimInput,
+  client: Terminal3Client,
+  assertProofScope?: (proofType: string) => void,
+) {
   const verifierAgent = await getAgentForProfile(input.verifierProfileId, input.verifierRole);
   if (!verifierAgent) {
-    throw new ApiError(409, "VERIFIER_AGENT_REQUIRED", "Register the clinic agent before verifying a proof");
+    throw new ApiError(409, "VERIFIER_AGENT_REQUIRED", `Register the ${input.verifierRole} agent before verifying a proof`);
   }
 
   const proof = await getPresentationProofForRecipient(input.presentationProofId, input.verifierProfileId);
   if (!proof) {
     throw new ApiError(404, "PRESENTATION_NOT_FOUND", "Presentation proof was not found for this verifier");
   }
+
+  assertProofScope?.(proof.proofType);
 
   const now = new Date();
   let result: VerificationResult;
@@ -67,4 +88,16 @@ export async function verifyClinicClaim(input: VerifyClinicClaimInput, client: T
   });
 
   return verificationRecord;
+}
+
+function assertInsurerEligibilityProof(proofType: string): void {
+  const normalizedProofType = proofType.trim().toLowerCase().replace(/\s+/g, "_");
+
+  if (!insurerEligibilityProofTypes.has(normalizedProofType)) {
+    throw new ApiError(
+      403,
+      "INSURER_ELIGIBILITY_SCOPE_DENIED",
+      "Insurer verification is limited to eligibility or coverage proofs",
+    );
+  }
 }
