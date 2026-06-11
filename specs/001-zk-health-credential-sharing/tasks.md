@@ -113,7 +113,7 @@
 - [x] T055 [P] [US2] Implement insurer claim repository for proof-backed decisions in `backend\src\services\supabase\insurerClaimRepository.ts`
 - [x] T056 [US2] Extend presentation generation service for insurer eligibility purpose and minimum-claim policy checks in `backend\src\services\terminal3\presentationService.ts`
 - [x] T057 [US2] Extend claim verification service for insurer eligibility outcomes in `backend\src\services\terminal3\claimVerificationService.ts`
-- [ ] T058 [US2] Implement claim decision route and insurer role enforcement in `backend\src\routes\claims.ts`
+- [x] T058 [US2] Implement claim decision route and insurer role enforcement in `backend\src\routes\claims.ts`
 - [ ] T059 [US2] Emit audit events for insurer request, overreach denial, eligibility verification, and claim decision outcomes in `backend\src\services\audit\claimAuditEvents.ts`
 - [ ] T060 [P] [US2] Implement insurer dashboard eligibility request UI in `frontend\src\dashboards\insurer\InsurerEligibilityPage.tsx`
 - [ ] T061 [P] [US2] Implement insurer claim decision UI with approved, denied, needs-review, loading, and error states in `frontend\src\dashboards\insurer\InsurerClaimDecisionPanel.tsx`
