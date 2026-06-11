@@ -1,5 +1,6 @@
 import { ApiError } from "../../schemas/common.js";
 import type { InsurerClaim, InsurerClaimDecisionStatus } from "../../types/domain.js";
+import { recordClaimDecisionOutcome } from "../audit/claimAuditEvents.js";
 import { supabaseAdmin } from "./client.js";
 import { mapInsurerClaim } from "./mappers.js";
 
@@ -115,7 +116,18 @@ export async function decideInsurerClaim(input: DecideInsurerClaimInput): Promis
     throw new Error(`Failed to store insurer claim decision: ${error.message}`);
   }
 
-  return mapInsurerClaim(data);
+  const decidedClaim = mapInsurerClaim(data);
+  await recordClaimDecisionOutcome({
+    actorProfileId: input.insurerProfileId,
+    patientProfileId: decidedClaim.patientProfileId,
+    targetProfileId: input.insurerProfileId,
+    presentationProofId: decidedClaim.presentationProofId,
+    insurerClaimId: decidedClaim.id,
+    status: input.status,
+    reason: decisionReason ?? undefined,
+  });
+
+  return decidedClaim;
 }
 
 async function assertProofBackedPresentation(input: ProofBackedPresentationInput): Promise<void> {

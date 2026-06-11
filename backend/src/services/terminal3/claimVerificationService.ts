@@ -1,5 +1,6 @@
 import { ApiError } from "../../schemas/common.js";
 import type { VerificationResult } from "../../types/domain.js";
+import { recordEligibilityVerification } from "../audit/claimAuditEvents.js";
 import { recordProofVerified } from "../audit/proofAuditEvents.js";
 import {
   createClaimVerification,
@@ -86,6 +87,18 @@ async function verifyRecipientClaim(
     presentationProofId: proof.id,
     reason,
   });
+
+  if (input.verifierRole === "insurer") {
+    await recordEligibilityVerification({
+      actorProfileId: input.verifierProfileId,
+      patientProfileId: proof.patientProfileId,
+      targetProfileId: input.verifierProfileId,
+      presentationProofId: proof.id,
+      requestedClaimType: proof.proofType,
+      result,
+      reason,
+    });
+  }
 
   return verificationRecord;
 }

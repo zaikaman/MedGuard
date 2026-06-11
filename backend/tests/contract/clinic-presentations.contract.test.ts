@@ -16,6 +16,7 @@ const authState = vi.hoisted(() => ({
 
 const presentationService = vi.hoisted(() => ({
   generateClinicPresentation: vi.fn(),
+  generateInsurerPresentation: vi.fn(),
 }));
 
 const claimService = vi.hoisted(() => ({
@@ -44,6 +45,13 @@ describe("clinic presentation contract", () => {
     vi.clearAllMocks();
     authState.role = "clinic";
     presentationService.generateClinicPresentation.mockResolvedValue({
+      id: presentationProofId,
+      proofRequestId: "50000000-0000-4000-8000-000000000001",
+      presentationHash: "sha256:presentation",
+      verificationStatus: "generated",
+      expiresAt: "2026-06-11T00:15:00.000Z",
+    });
+    presentationService.generateInsurerPresentation.mockResolvedValue({
       id: presentationProofId,
       proofRequestId: "50000000-0000-4000-8000-000000000001",
       presentationHash: "sha256:presentation",
@@ -85,7 +93,7 @@ describe("clinic presentation contract", () => {
     expect(response.body).toMatchObject({ presentationProofId, result: "accepted" });
   });
 
-  it("rejects insurer access until User Story 2 extends presentation generation", async () => {
+  it("POST /api/presentations/generate returns insurer eligibility proof metadata", async () => {
     authState.role = "insurer";
 
     const response = await request(app).post("/api/presentations/generate").send({
@@ -95,7 +103,15 @@ describe("clinic presentation contract", () => {
       purpose: "claim_eligibility",
     });
 
-    expect(response.status).toBe(403);
-    expect(response.body.code).toBe("ROLE_FORBIDDEN");
+    expect(response.status).toBe(201);
+    expect(response.body).toMatchObject({ id: presentationProofId, verificationStatus: "generated" });
+    expect(presentationService.generateInsurerPresentation).toHaveBeenCalledWith(
+      expect.objectContaining({
+        requesterProfileId: authState.userId,
+        requesterRole: "insurer",
+        patientProfileId,
+        delegationId,
+      }),
+    );
   });
 });

@@ -1,5 +1,6 @@
 import { ApiError } from "../../schemas/common.js";
 import type { PresentationProof } from "../../types/domain.js";
+import { recordInsurerOverreachDenied, recordInsurerRequest } from "../audit/claimAuditEvents.js";
 import { recordProofApproved, recordProofDenied, recordProofRequested } from "../audit/proofAuditEvents.js";
 import { evaluateDisclosurePolicy } from "../policies/policyEvaluator.js";
 import { findEligibleCredential } from "../supabase/credentialRepository.js";
@@ -40,7 +41,23 @@ export async function generateInsurerPresentation(
   input: GenerateInsurerPresentationInput,
   client: Terminal3Client = terminal3Client,
 ): Promise<PresentationProof> {
-  assertMinimumInsurerClaimPolicy(input.requestedClaimType, input.purpose);
+  try {
+    assertMinimumInsurerClaimPolicy(input.requestedClaimType, input.purpose);
+  } catch (error) {
+    if (error instanceof ApiError && error.statusCode === 403) {
+      await recordInsurerOverreachDenied({
+        actorProfileId: input.requesterProfileId,
+        patientProfileId: input.patientProfileId,
+        targetProfileId: input.requesterProfileId,
+        requestedClaimType: input.requestedClaimType,
+        purpose: input.purpose,
+        reason: error.message,
+        errorCode: error.code,
+      });
+    }
+    throw error;
+  }
+
   return generateRecipientPresentation(input, client);
 }
 
@@ -71,6 +88,17 @@ async function generateRecipientPresentation(
     purpose: input.purpose,
   });
 
+  if (input.requesterRole === "insurer") {
+    await recordInsurerRequest({
+      actorProfileId: input.requesterProfileId,
+      patientProfileId: input.patientProfileId,
+      targetProfileId: input.requesterProfileId,
+      proofRequestId: proofRequest.id,
+      requestedClaimType: input.requestedClaimType,
+      purpose: input.purpose,
+    });
+  }
+
   const delegation = await getDelegationById(input.delegationId);
   const credential = await findEligibleCredential(input.patientProfileId, input.requestedClaimType);
   const decision = evaluateDisclosurePolicy(
@@ -88,6 +116,18 @@ async function generateRecipientPresentation(
 
   if (!decision.allowed || !delegation || !credential) {
     await updateProofRequestDecision(proofRequest.id, "denied", decision.reason);
+    if (input.requesterRole === "insurer") {
+      await recordInsurerOverreachDenied({
+        actorProfileId: input.requesterProfileId,
+        patientProfileId: input.patientProfileId,
+        targetProfileId: input.requesterProfileId,
+        proofRequestId: proofRequest.id,
+        requestedClaimType: input.requestedClaimType,
+        purpose: input.purpose,
+        reason: decision.reason,
+        errorCode: "POLICY_DENIED",
+      });
+    }
     await recordProofDenied({
       actorProfileId: input.requesterProfileId,
       patientProfileId: input.patientProfileId,
