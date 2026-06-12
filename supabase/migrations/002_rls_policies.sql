@@ -121,4 +121,20 @@ using (
   or target_profile_id = auth.uid()
 );
 
-create publication supabase_realtime for table public.audit_events;
+do $$
+begin
+  if not exists (select 1 from pg_publication where pubname = 'supabase_realtime') then
+    create publication supabase_realtime;
+  end if;
+  
+  if not exists (
+    select 1
+    from pg_publication_tables
+    where pubname = 'supabase_realtime'
+    and schemaname = 'public'
+    and tablename = 'audit_events'
+  ) then
+    alter publication supabase_realtime add table public.audit_events;
+  end if;
+end;
+$$;
