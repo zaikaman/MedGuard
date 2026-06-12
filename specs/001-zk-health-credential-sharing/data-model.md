@@ -46,6 +46,47 @@ Validation:
 - No private keys, raw credentials, or PII.
 - Only backend service role can insert/update registration status.
 
+### agent_runs
+
+Auditable record of a role-specific AI agent workflow.
+
+| Field | Type | Rules |
+|-------|------|-------|
+| id | uuid | Primary key |
+| agent_identity_id | uuid | References the acting T3 DID-backed agent |
+| profile_id | uuid | References the user profile that owns or invokes the agent |
+| role | enum | `patient`, `clinic`, or `insurer`; must match agent role |
+| run_type | text | Required, e.g. `disclosure_review`, `proof_request`, `eligibility_review`, `delegation_review` |
+| status | enum | `queued`, `running`, `completed`, `blocked`, `failed` |
+| input_summary | text | Non-sensitive summary only |
+| output_summary | text | Non-sensitive summary only |
+| policy_decision | jsonb | Non-sensitive allow/deny rationale |
+| created_at | timestamptz | Required |
+| completed_at | timestamptz | Optional |
+
+Validation:
+- Raw prompts containing medical records are forbidden.
+- Agent output must be advisory or tool-mediated; all tools still enforce policy.
+
+### agent_tool_calls
+
+Audit trail of tools selected by an AI agent.
+
+| Field | Type | Rules |
+|-------|------|-------|
+| id | uuid | Primary key |
+| agent_run_id | uuid | References `agent_runs.id` |
+| tool_name | text | Required; must be in the role allowlist |
+| status | enum | `allowed`, `denied`, `completed`, `failed` |
+| input_hash | text | Hash of tool input, not raw content |
+| output_hash | text | Hash of tool output, not raw content |
+| denial_reason | text | Required when status is `denied` |
+| created_at | timestamptz | Required |
+
+Validation:
+- Tool inputs and outputs are stored as hashes plus non-sensitive summaries.
+- Tool execution must emit an `audit_events` record.
+
 ### credential_hashes
 
 Non-sensitive references to health credentials.
@@ -214,8 +255,11 @@ Validation:
 - Insurers can read their profile, their Insurer Agent, proof requests they made,
   approved eligibility presentations addressed to them, claim decisions they
   own, and audit events where they are actor or target.
+- Users can read agent run and tool-call metadata for agents they own; recipients
+  can see only run outcomes explicitly addressed to them.
 - Only patients can create/revoke delegations for themselves.
 - Only backend service role can create agent identities, credential hashes,
-  presentation proofs, verification records, and audit events.
+  agent runs, agent tool calls, presentation proofs, verification records, and
+  audit events.
 - No role can read another user's raw health data because raw health data is not
   stored in Supabase.

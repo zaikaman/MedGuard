@@ -17,32 +17,37 @@ agents as appropriate for the user's profile role.
 
 The backend exposes REST endpoints for agent identity registration, credential
 issuance metadata, selective ZK presentation generation, inter-agent claim
-verification, and delegated access with expiry. Supabase stores role profiles,
-agent metadata, credential hashes, presentation proof metadata, delegation
-records, referrals, claim decisions, and real-time audit events. Raw health
-records and PII remain in T3N and are never stored in Supabase or returned to
+verification, and delegated access with expiry. It also runs constrained
+role-specific AI agents: the Patient Agent evaluates disclosure intent and
+delegation policy, the Clinic Agent formulates minimum-necessary proof requests
+and referral drafts, and the Insurer Agent evaluates eligibility proofs and claim
+decision recommendations. Supabase stores role profiles, agent metadata, agent
+run metadata, credential hashes, presentation proof metadata, delegation records,
+referrals, claim decisions, and real-time audit events. Raw health records and
+PII remain in T3N and are never stored in Supabase or returned to
 Clinic/Insurer dashboards.
 
 ## Technical Context
 
 **Language/Version**: TypeScript on Node.js >=18; React 18 + Vite frontend; Express backend  
 **Primary Dependencies**: React, Vite, React Router, Supabase JS client, Node.js, Express, Terminal 3 `@terminal3/t3n-sdk`, Zod or equivalent validation, Heroku (backend) + Vercel (frontend) deployment runtimes  
-**Storage**: Supabase PostgreSQL for role profiles, agent metadata, credential hashes, proof records, delegation records, referrals, claim decisions, and audit events; Supabase Auth email OTP for users; T3N for raw health records/PII and T3 agent execution context  
+**Storage**: Supabase PostgreSQL for role profiles, agent metadata, agent run/tool-call metadata, credential hashes, proof records, delegation records, referrals, claim decisions, and audit events; Supabase Auth email OTP for users; T3N for raw health records/PII and T3 agent execution context  
 **Testing**: Vitest + React Testing Library for frontend units/components; Playwright for role dashboard flows; Node test runner or Vitest + Supertest for Express APIs; Supabase RLS policy tests; contract tests against OpenAPI examples; mocked Terminal 3 SDK integration tests plus testnet smoke tests when tokens are available  
 **Target Platform**: Web app with Express backend deployed to Heroku and React + Vite frontend deployed to Vercel, with environment-separated config for local, staging, and production  
 **Project Type**: Web application with separate frontend and backend services  
 **Performance Goals**: 95% of proof request decisions visible within 5 seconds; 95% of revocations effective for new proof requests within 2 seconds; 95% of audit events visible within 3 seconds; support at least 1,000 proof decisions per hour  
-**Constraints**: Terminal 3 SDK integration is backend-only; Supabase stores no raw health records or PII from T3N; RBAC enforced in Express middleware and Supabase RLS; all dashboards receive equal production-quality UI treatment; audit log updates must be live for all roles  
-**Scale/Scope**: Three role dashboards, three T3 agent identities, REST API, Supabase schema/RLS, real-time audit panel, Heroku + Vercel deployment, and bounty documentation findings
+**Constraints**: Terminal 3 SDK integration is backend-only; AI agents must run server-side with role-specific tool allowlists, deterministic policy guards, auditable decisions, and no direct raw-record access; Supabase stores no raw health records or PII from T3N; RBAC enforced in Express middleware and Supabase RLS; all dashboards receive equal production-quality UI treatment; audit log updates must be live for all roles  
+**Scale/Scope**: Three role dashboards, three T3 agent identities, three role-specific AI agent services, REST API, Supabase schema/RLS, real-time audit panel, Heroku + Vercel deployment, and bounty documentation findings
 
 ## Constitution Check
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
 - **Code Quality**: PASS. The plan separates frontend, backend, shared types,
-  Supabase schema/migrations, and Terminal 3 integration boundaries. Terminal 3
-  calls are isolated behind backend services; frontend consumes typed REST
-  contracts only.
+  Supabase schema/migrations, AI agent runtime, and Terminal 3 integration
+  boundaries. Terminal 3 calls are isolated behind backend services; AI agents
+  invoke only approved backend tools; frontend consumes typed REST contracts
+  only.
 - **Testing Standards**: PASS. The plan includes component/unit tests, API tests,
   RLS policy tests, contract tests, Playwright role flows, mocked Terminal 3 SDK
   integration tests, and optional testnet smoke tests when tokens are available.
@@ -53,7 +58,8 @@ Clinic/Insurer dashboards.
   visibility targets from the spec are retained and mapped to measurable tests.
 - **Security, Privacy, Reliability**: PASS. Supabase email OTP Auth + Express RBAC +
   Supabase RLS are required. Raw health records remain in T3N; Supabase stores
-  only hashes, metadata, policy state, proof artifacts, and audit events.
+  only hashes, metadata, agent run/tool-call records, policy state, proof
+  artifacts, and audit events.
 
 **Post-Design Re-check**: PASS. `research.md`, `data-model.md`,
 `contracts/openapi.yaml`, and `quickstart.md` keep the same boundaries: Terminal
@@ -98,6 +104,7 @@ backend/
 |   |   |-- referrals.ts
 |   |   `-- audit.ts
 |   |-- services/
+|   |   |-- agents/
 |   |   |-- terminal3/
 |   |   |-- supabase/
 |   |   |-- policies/
@@ -107,6 +114,7 @@ backend/
 `-- tests/
     |-- contract/
     |-- integration/
+    |-- agents/
     |-- rls/
     `-- unit/
 

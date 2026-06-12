@@ -2,7 +2,7 @@
 
 **Input**: Design documents from `D:\MedGuard\specs\001-zk-health-credential-sharing\`
 **Prerequisites**: `plan.md`, `spec.md`, `research.md`, `data-model.md`, `contracts\openapi.yaml`, `quickstart.md`
-**Tests**: Required. The specification requires API, RLS, contract, mocked Terminal 3 integration, Playwright role-flow, and performance coverage.
+**Tests**: Required. The specification requires API, RLS, contract, mocked Terminal 3 integration, constrained AI-agent runtime, Playwright role-flow, and performance coverage.
 **Organization**: Tasks are grouped by user story so each story can be implemented and tested independently after shared foundations are complete.
 
 ## Format: `[ID] [P?] [Story] Description`
@@ -45,13 +45,17 @@
 - [x] T019 Implement Terminal 3 SDK boundary wrapper with no browser-exposed secrets in `backend\src\services\terminal3\terminal3Client.ts`
 - [x] T020 Implement policy evaluation primitives for recipient identity, purpose, claim type, credential state, and delegation state in `backend\src\services\policies\policyEvaluator.ts`
 - [x] T021 Implement audit event writer that strips raw records and PII from metadata in `backend\src\services\audit\auditService.ts`
-- [x] T022 [P] Implement shared backend domain types for profiles, agents, credentials, proofs, delegations, claims, referrals, and audit events in `backend\src\types\domain.ts`
+- [x] T022 [P] Implement shared backend domain types for profiles, agents, credentials, proofs, delegations, claims, referrals, agent runs, agent tool calls, and audit events in `backend\src\types\domain.ts`
 - [x] T023 [P] Implement frontend Supabase client and typed API client foundation in `frontend\src\lib\supabase.ts` and `frontend\src\lib\api\client.ts`
 - [x] T024 Implement frontend email OTP request/verification auth provider, protected route wrapper, and role redirect shell in `frontend\src\auth\AuthProvider.tsx` and `frontend\src\routes\ProtectedRoute.tsx`
 - [x] T025 [P] Implement shared application layout primitives for equal-fidelity dashboards in `frontend\src\components\AppLayout.tsx` and `frontend\src\styles\theme.css`
 - [x] T026 [P] Add performance measurement helpers for proof decision, revocation, and audit visibility timing in `backend\tests\performance\metrics.ts`
+- [ ] T026A [P] Add AI agent run and tool-call tables, enums, and RLS policies in `supabase\migrations\004_agent_runtime.sql`
+- [ ] T026B [P] Implement constrained AI agent runtime types, role prompts, and tool allowlist registry in `backend\src\services\agents\agentRuntime.ts`, `backend\src\services\agents\agentPrompts.ts`, and `backend\src\services\agents\toolRegistry.ts`
+- [ ] T026C [P] Implement agent run repository and audit-safe tool call logging in `backend\src\services\supabase\agentRunRepository.ts`
+- [ ] T026D [P] Add unit tests proving each role agent can call only approved tools and never receives raw medical records in `backend\tests\agents\agentRuntime.test.ts`
 
-**Checkpoint**: Foundation ready. User story implementation can now begin in priority order or in parallel by separate developers.
+**Checkpoint**: Foundation ready only after T026A-T026D are complete. User story implementation can then begin in priority order or in parallel by separate developers.
 
 ---
 
@@ -67,6 +71,8 @@
 - [x] T028 [P] [US1] Add contract tests for `GET /credentials` and `POST /credentials/issue` in `backend\tests\contract\credentials.contract.test.ts`
 - [x] T029 [P] [US1] Add contract tests for `POST /presentations/generate` and `POST /claims/verify` clinic cases in `backend\tests\contract\clinic-presentations.contract.test.ts`
 - [x] T030 [P] [US1] Add unit tests for clinic proof policy approval, denial, expiry, malformed proof, and identity mismatch in `backend\tests\unit\clinicPolicyEvaluator.test.ts`
+- [ ] T030A [P] [US1] Add Patient Agent tests for disclosure recommendation, policy denial explanation, and no-raw-record prompt context in `backend\tests\agents\patientAgent.test.ts`
+- [ ] T030B [P] [US1] Add Clinic Agent tests for minimum-necessary proof request drafting and tool allowlist enforcement in `backend\tests\agents\clinicAgent.test.ts`
 - [x] T031 [P] [US1] Add mocked Terminal 3 registration, presentation generation, and verification integration tests in `backend\tests\integration\terminal3ClinicFlow.test.ts`
 - [x] T032 [P] [US1] Add RLS tests proving clinic users cannot read raw credential data or unrelated patient metadata in `supabase\tests\clinic_sharing_rls.test.sql`
 - [ ] T033 [P] [US1] Add Playwright flow for patient credential setup and clinic proof verification in `frontend\tests\e2e\clinic-proof-sharing.spec.ts`
@@ -79,10 +85,13 @@
 - [x] T037 [US1] Implement credential listing and issue/import routes in `backend\src\routes\credentials.ts`
 - [x] T038 [P] [US1] Implement proof request and presentation metadata repository in `backend\src\services\supabase\proofRepository.ts`
 - [x] T039 [US1] Implement clinic presentation generation service with delegation, purpose, credential status, and identity checks in `backend\src\services\terminal3\presentationService.ts`
+- [ ] T039A [US1] Implement Patient AI Agent service for disclosure review and patient-facing recommendation summaries in `backend\src\services\agents\patientAgent.ts`
+- [ ] T039B [US1] Implement Clinic AI Agent service for minimum-necessary proof request drafting and referral context summaries in `backend\src\services\agents\clinicAgent.ts`
 - [x] T040 [US1] Implement presentation generation route for clinic proof requests in `backend\src\routes\presentations.ts`
 - [x] T041 [P] [US1] Implement claim verification service for clinic proof outcomes in `backend\src\services\terminal3\claimVerificationService.ts`
 - [x] T042 [US1] Implement claim verification route for accepted, denied, expired, revoked, and unverifiable states in `backend\src\routes\claims.ts`
 - [x] T043 [US1] Emit audit events for clinic proof requested, approved, denied, and verified outcomes in `backend\src\services\audit\proofAuditEvents.ts`
+- [ ] T043A [US1] Emit audit events for Patient Agent and Clinic Agent run decisions and denied tool calls in `backend\src\services\audit\agentAuditEvents.ts`
 - [x] T044 [P] [US1] Implement patient onboarding and credential metadata UI in `frontend\src\dashboards\patient\PatientCredentialsPage.tsx`
 - [x] T045 [P] [US1] Implement clinic dashboard proof request form in `frontend\src\dashboards\clinic\ClinicProofRequestPage.tsx`
 - [x] T046 [US1] Implement clinic proof result states for accepted, denied, expired, revoked, unverifiable, loading, and error states in `frontend\src\dashboards\clinic\ClinicProofResultPanel.tsx`
@@ -104,6 +113,7 @@
 - [ ] T049 [P] [US2] Add contract tests for insurer `POST /presentations/generate` and `POST /claims/verify` cases in `backend\tests\contract\insurer-presentations.contract.test.ts`
 - [ ] T050 [P] [US2] Add contract tests for `POST /claims/{claimId}/decision` in `backend\tests\contract\claim-decisions.contract.test.ts`
 - [ ] T051 [P] [US2] Add unit tests for insurer policy scope, overreach denial, and revoked delegation denial in `backend\tests\unit\insurerPolicyEvaluator.test.ts`
+- [ ] T051A [P] [US2] Add Insurer Agent tests for eligibility proof review, claim decision recommendation, and no-raw-record prompt context in `backend\tests\agents\insurerAgent.test.ts`
 - [ ] T052 [P] [US2] Add mocked Terminal 3 insurer eligibility integration tests in `backend\tests\integration\terminal3InsurerFlow.test.ts`
 - [ ] T053 [P] [US2] Add RLS tests proving insurers can read only their own presentations and claim decisions in `supabase\tests\insurer_claims_rls.test.sql`
 - [ ] T054 [P] [US2] Add Playwright flow for insurer eligibility request, decision, and no-raw-record display in `frontend\tests\e2e\insurer-eligibility.spec.ts`
@@ -113,8 +123,10 @@
 - [x] T055 [P] [US2] Implement insurer claim repository for proof-backed decisions in `backend\src\services\supabase\insurerClaimRepository.ts`
 - [x] T056 [US2] Extend presentation generation service for insurer eligibility purpose and minimum-claim policy checks in `backend\src\services\terminal3\presentationService.ts`
 - [x] T057 [US2] Extend claim verification service for insurer eligibility outcomes in `backend\src\services\terminal3\claimVerificationService.ts`
+- [ ] T057A [US2] Implement Insurer AI Agent service for eligibility proof review and claim decision recommendations in `backend\src\services\agents\insurerAgent.ts`
 - [x] T058 [US2] Implement claim decision route and insurer role enforcement in `backend\src\routes\claims.ts`
 - [x] T059 [US2] Emit audit events for insurer request, overreach denial, eligibility verification, and claim decision outcomes in `backend\src\services\audit\claimAuditEvents.ts`
+- [ ] T059A [US2] Emit audit events for Insurer Agent run decisions and denied tool calls in `backend\src\services\audit\agentAuditEvents.ts`
 - [x] T060 [P] [US2] Implement insurer dashboard eligibility request UI in `frontend\src\dashboards\insurer\InsurerEligibilityPage.tsx`
 - [x] T061 [P] [US2] Implement insurer claim decision UI with approved, denied, needs-review, loading, and error states in `frontend\src\dashboards\insurer\InsurerClaimDecisionPanel.tsx`
 - [x] T062 [US2] Add frontend API hooks for insurer presentations and claim decisions in `frontend\src\features\claims\useInsurerClaimFlow.ts`
@@ -136,6 +148,7 @@
 - [ ] T065 [P] [US3] Add contract tests for `GET /delegations`, `POST /delegations`, and `POST /delegations/{delegationId}/revoke` in `backend\tests\contract\delegations.contract.test.ts`
 - [ ] T066 [P] [US3] Add contract tests for `GET /audit-events` filters in `backend\tests\contract\audit-events.contract.test.ts`
 - [ ] T067 [P] [US3] Add unit tests for delegation creation, narrowing, expiration, revocation, and concurrent request handling in `backend\tests\unit\delegationService.test.ts`
+- [ ] T067A [P] [US3] Add Patient Agent delegation-review tests for grant, narrow, expire, revoke, and audit-summary recommendations in `backend\tests\agents\patientDelegationAgent.test.ts`
 - [ ] T068 [P] [US3] Add integration tests for revoke-then-request denial and audit event ordering in `backend\tests\integration\delegationAuditFlow.test.ts`
 - [ ] T069 [P] [US3] Add RLS tests proving patients control their delegations and only authorized parties read audit metadata in `supabase\tests\delegations_audit_rls.test.sql`
 - [ ] T070 [P] [US3] Add Playwright flow for grant, revoke, filter audit history, and real-time update states in `frontend\tests\e2e\delegation-audit.spec.ts`
@@ -144,6 +157,7 @@
 
 - [ ] T071 [P] [US3] Implement delegation schemas and repository in `backend\src\schemas\delegations.ts` and `backend\src\services\supabase\delegationRepository.ts`
 - [ ] T072 [US3] Implement delegation service with allowed functions, allowed hosts, expiration, narrowing, and revocation semantics in `backend\src\services\policies\delegationService.ts`
+- [ ] T072A [US3] Extend Patient AI Agent service to recommend delegation grants, narrowing, expiry, and revocation actions without executing them directly in `backend\src\services\agents\patientAgent.ts`
 - [ ] T073 [US3] Implement delegation list, create, and revoke routes in `backend\src\routes\delegations.ts`
 - [ ] T074 [P] [US3] Implement audit event repository and filter query support in `backend\src\services\supabase\auditRepository.ts`
 - [ ] T075 [US3] Implement audit event route with role-aware filters for agent, status, purpose, and time period in `backend\src\routes\audit.ts`
@@ -152,6 +166,7 @@
 - [ ] T078 [P] [US3] Implement shared live audit log panel with filters, empty, loading, error, and recovery states in `frontend\src\features\audit-log\AuditLogPanel.tsx`
 - [ ] T079 [US3] Add frontend audit subscription and delegation API hooks in `frontend\src\features\audit-log\useAuditEvents.ts` and `frontend\src\features\delegations\useDelegations.ts`
 - [ ] T080 [US3] Measure revocation effectiveness within 2 seconds and audit visibility within 3 seconds in `backend\tests\performance\revocationAudit.performance.test.ts`
+- [ ] T080A [US3] Measure AI agent run latency and denied-tool-call audit visibility in `backend\tests\performance\agentRuntime.performance.test.ts`
 
 **Checkpoint**: All user stories are independently functional with patient control and live auditability.
 
@@ -177,8 +192,8 @@
 ### Phase Dependencies
 
 - **Setup (Phase 1)**: No dependencies; can start immediately.
-- **Foundational (Phase 2)**: Depends on Setup; blocks all user stories.
-- **User Story 1 (Phase 3)**: Depends on Foundational; MVP scope.
+- **Foundational (Phase 2)**: Depends on Setup; blocks all user stories and includes the AI agent runtime foundation.
+- **User Story 1 (Phase 3)**: Depends on Foundational plus AI agent runtime tasks T026A-T026D; MVP scope.
 - **User Story 2 (Phase 4)**: Depends on Foundational and can run alongside US1 if repository/service contracts are coordinated; sequential priority is US1 then US2.
 - **User Story 3 (Phase 5)**: Depends on Foundational and can run alongside US1/US2 if delegation API contracts are stable; sequential priority is US1 then US2 then US3.
 - **Polish (Phase 6)**: Depends on the selected story scope being complete.

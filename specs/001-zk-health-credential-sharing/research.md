@@ -36,6 +36,24 @@ Sources:
 - https://docs.terminal3.io/intro/components/did
 - https://docs.terminal3.io/t3n/overview/what-is-t3n
 
+## Decision: Implement role-specific AI agents as constrained backend services
+
+**Rationale**: The hackathon evaluates agentic solutions, so Patient, Clinic,
+and Insurer must be more than DID records. Each role needs an AI-agent service
+that can reason over non-sensitive context, select approved tools, and produce
+auditable actions. Agents run only in the Express backend, use Terminal 3 DIDs as
+verifiable identity, and call a narrow tool allowlist that enforces policy before
+any proof, claim, referral, or delegation action.
+
+**Alternatives considered**:
+- DID-only "agents": rejected because it does not satisfy the agentic focus of
+  the bounty and leaves no autonomous workflow to demonstrate.
+- Browser-run agents: rejected because prompts, tools, secrets, and Terminal 3
+  SDK calls must not be exposed to the client.
+- Fully autonomous actions without approval gates: rejected because healthcare
+  data disclosure and claim decisions require policy checks, auditability, and
+  user-visible control.
+
 ## Decision: Treat ZK presentations as derived proof artifacts, not records
 
 **Rationale**: Terminal 3 VC docs describe VPs as data derived from one or more
