@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode } from "react";
+import React, { createContext, useContext, useState, useEffect, useCallback, ReactNode, useRef } from "react";
 import { User, Session, AuthError } from "@supabase/supabase-js";
 import { supabase } from "../lib/supabase";
 
@@ -35,6 +35,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
   const [onboarding, setOnboarding] = useState(false);
 
+  const currentUserRef = useRef<User | null>(null);
+  const currentProfileRef = useRef<Profile | null>(null);
+
   const fetchProfile = useCallback(async (userId: string) => {
     try {
       const { data, error } = await supabase
@@ -46,22 +49,27 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (error) {
         console.error("Error fetching profile:", error);
         setProfile(null);
+        currentProfileRef.current = null;
         setOnboarding(false);
         return null;
       }
 
       if (data) {
-        setProfile(data as Profile);
+        const p = data as Profile;
+        setProfile(p);
+        currentProfileRef.current = p;
         setOnboarding(false);
-        return data as Profile;
+        return p;
       } else {
         setProfile(null);
+        currentProfileRef.current = null;
         setOnboarding(true);
         return null;
       }
     } catch (e) {
       console.error("Exception during profile fetch:", e);
       setProfile(null);
+      currentProfileRef.current = null;
       setOnboarding(false);
       return null;
     }
@@ -89,11 +97,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (initialSession) {
           setSession(initialSession);
           setUser(initialSession.user);
+          currentUserRef.current = initialSession.user;
           await fetchProfile(initialSession.user.id);
         } else {
           setSession(null);
           setUser(null);
+          currentUserRef.current = null;
           setProfile(null);
+          currentProfileRef.current = null;
           setOnboarding(false);
         }
       } catch (e) {
@@ -110,15 +121,30 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, currentSession) => {
       if (!active) return;
       
+      const nextUser = currentSession?.user ?? null;
       setSession(currentSession);
-      setUser(currentSession?.user ?? null);
+      setUser(nextUser);
 
-      if (currentSession?.user) {
-        setLoading(true);
-        await fetchProfile(currentSession.user.id);
-        setLoading(false);
+      if (nextUser) {
+        const isNewUser = currentUserRef.current?.id !== nextUser.id;
+        const hasNoProfile = !currentProfileRef.current && !onboarding;
+
+        currentUserRef.current = nextUser;
+
+        if (isNewUser || hasNoProfile) {
+          const shouldSetLoading = !currentProfileRef.current;
+          if (shouldSetLoading) {
+            setLoading(true);
+          }
+          await fetchProfile(nextUser.id);
+          if (shouldSetLoading) {
+            setLoading(false);
+          }
+        }
       } else {
+        currentUserRef.current = null;
         setProfile(null);
+        currentProfileRef.current = null;
         setOnboarding(false);
       }
     });
@@ -154,6 +180,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (data.session) {
         setSession(data.session);
         setUser(data.session.user);
+        currentUserRef.current = data.session.user;
         const userProfile = await fetchProfile(data.session.user.id);
         return { session: data.session, error: null };
       }
@@ -169,7 +196,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     if (!error) {
       setSession(null);
       setUser(null);
+      currentUserRef.current = null;
       setProfile(null);
+      currentProfileRef.current = null;
       setOnboarding(false);
     }
     return { error };
@@ -199,6 +228,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       if (data) {
         const newProfile = data as Profile;
         setProfile(newProfile);
+        currentProfileRef.current = newProfile;
         setOnboarding(false);
         return { profile: newProfile, error: null };
       }
