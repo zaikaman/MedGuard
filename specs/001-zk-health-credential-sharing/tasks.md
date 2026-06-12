@@ -115,10 +115,10 @@
 - [x] T057 [US2] Extend claim verification service for insurer eligibility outcomes in `backend\src\services\terminal3\claimVerificationService.ts`
 - [x] T058 [US2] Implement claim decision route and insurer role enforcement in `backend\src\routes\claims.ts`
 - [x] T059 [US2] Emit audit events for insurer request, overreach denial, eligibility verification, and claim decision outcomes in `backend\src\services\audit\claimAuditEvents.ts`
-- [ ] T060 [P] [US2] Implement insurer dashboard eligibility request UI in `frontend\src\dashboards\insurer\InsurerEligibilityPage.tsx`
-- [ ] T061 [P] [US2] Implement insurer claim decision UI with approved, denied, needs-review, loading, and error states in `frontend\src\dashboards\insurer\InsurerClaimDecisionPanel.tsx`
+- [x] T060 [P] [US2] Implement insurer dashboard eligibility request UI in `frontend\src\dashboards\insurer\InsurerEligibilityPage.tsx`
+- [x] T061 [P] [US2] Implement insurer claim decision UI with approved, denied, needs-review, loading, and error states in `frontend\src\dashboards\insurer\InsurerClaimDecisionPanel.tsx`
 - [x] T062 [US2] Add frontend API hooks for insurer presentations and claim decisions in `frontend\src\features\claims\useInsurerClaimFlow.ts`
-- [ ] T063 [US2] Show patient notification state for insurer policy denial without revealing extra facts in `frontend\src\dashboards\patient\PatientDenialNotifications.tsx`
+- [x] T063 [US2] Show patient notification state for insurer policy denial without revealing extra facts in `frontend\src\dashboards\patient\PatientDenialNotifications.tsx`
 - [ ] T064 [US2] Measure insurer proof decision latency and denied-request error rates in `backend\tests\performance\insurerProofDecision.performance.test.ts`
 
 **Checkpoint**: User Stories 1 and 2 both work independently without exposing raw records.

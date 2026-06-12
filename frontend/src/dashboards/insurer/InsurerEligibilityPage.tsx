@@ -234,7 +234,7 @@ export default function InsurerEligibilityPage() {
           <p className="dashboard-subtitle">Verified inter-agent eligibility verification & claim processing</p>
         </div>
         <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-          <span style={{ fontSize: "0.75rem", textTransform: "uppercase", tracking: "0.05em", color: "var(--text-secondary)", fontWeight: 700 }}>
+          <span style={{ fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--text-secondary)", fontWeight: 700 }}>
             Insurer DID
           </span>
           <span style={{ fontFamily: "monospace", fontSize: "0.8rem", color: "var(--role-insurer-color)" }}>
