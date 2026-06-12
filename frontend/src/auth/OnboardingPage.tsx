@@ -58,17 +58,7 @@ export default function OnboardingPage() {
         </div>
 
         {error && (
-          <div
-            style={{
-              padding: "12px",
-              backgroundColor: "rgba(220, 38, 38, 0.15)",
-              border: "1px solid #DC2626",
-              borderRadius: "var(--radius-sm)",
-              color: "#F87171",
-              fontSize: "0.85rem",
-              lineHeight: "1.4",
-            }}
-          >
+          <div className="alert-banner-error" style={{ marginBottom: "16px" }}>
             {error}
           </div>
         )}

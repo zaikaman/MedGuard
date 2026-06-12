@@ -61,9 +61,9 @@ export function ClinicProofResultPanel({
 
   if (error) {
     return (
-      <div className="card-section" style={{ borderColor: "#DC2626" }}>
+      <div className="card-section" style={{ borderColor: "var(--status-denied-border)" }}>
         <div className="card-title-container">
-          <h2 className="card-title" style={{ color: "#F87171" }}>Verification Failed</h2>
+          <h2 className="card-title" style={{ color: "var(--status-denied-text)" }}>Verification Failed</h2>
           <button onClick={onReset} className="btn btn-outline">New Request</button>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -74,10 +74,10 @@ export function ClinicProofResultPanel({
           <div
             style={{
               padding: "16px",
-              backgroundColor: "rgba(220, 38, 38, 0.08)",
-              border: "1px solid rgba(220, 38, 38, 0.2)",
+              backgroundColor: "var(--status-denied-bg)",
+              border: "1px solid var(--status-denied-border)",
               borderRadius: "var(--radius-md)",
-              color: "#F87171",
+              color: "var(--status-denied-text)",
               fontFamily: "monospace",
               fontSize: "0.85rem",
             }}
@@ -101,9 +101,9 @@ export function ClinicProofResultPanel({
           title: "Cryptographic Proof Verified",
           description: "The Patient Agent successfully presented a zero-knowledge proof of the health fact. No raw health record files were disclosed.",
           alertStyle: {
-            backgroundColor: "rgba(22, 163, 74, 0.08)",
-            border: "1px solid rgba(22, 163, 74, 0.2)",
-            color: "#4ADE80",
+            backgroundColor: "var(--status-approved-bg)",
+            border: "1px solid var(--status-approved-border)",
+            color: "var(--status-approved-text)",
           },
         };
       case "denied":
@@ -114,9 +114,9 @@ export function ClinicProofResultPanel({
           title: "Proof Generation Denied",
           description: "The Patient Agent rejected the disclosure request as it exceeded the patient's active sharing policy restrictions.",
           alertStyle: {
-            backgroundColor: "rgba(220, 38, 38, 0.08)",
-            border: "1px solid rgba(220, 38, 38, 0.2)",
-            color: "#F87171",
+            backgroundColor: "var(--status-denied-bg)",
+            border: "1px solid var(--status-denied-border)",
+            color: "var(--status-denied-text)",
           },
         };
       case "expired":
@@ -127,9 +127,9 @@ export function ClinicProofResultPanel({
           title: "Proof Validity Expired",
           description: "The presented proof has expired. The clinic can no longer query this data without initiating a fresh proof request.",
           alertStyle: {
-            backgroundColor: "rgba(217, 119, 6, 0.08)",
-            border: "1px solid rgba(217, 119, 6, 0.2)",
-            color: "#FBBF24",
+            backgroundColor: "var(--status-pending-bg)",
+            border: "1px solid var(--status-pending-border)",
+            color: "var(--status-pending-text)",
           },
         };
       case "revoked":
@@ -140,9 +140,9 @@ export function ClinicProofResultPanel({
           title: "Delegated Access Revoked",
           description: "The delegation governing this proof request was explicitly revoked by the patient prior to verification.",
           alertStyle: {
-            backgroundColor: "rgba(220, 38, 38, 0.08)",
-            border: "1px solid rgba(220, 38, 38, 0.2)",
-            color: "#F87171",
+            backgroundColor: "var(--status-denied-bg)",
+            border: "1px solid var(--status-denied-border)",
+            color: "var(--status-denied-text)",
           },
         };
       case "unverifiable":
@@ -154,9 +154,9 @@ export function ClinicProofResultPanel({
           title: "Malformed or Unverifiable Proof",
           description: "The cryptographic proof signatures could not be verified. This may indicate a tampering attempt or mismatching key anchors.",
           alertStyle: {
-            backgroundColor: "rgba(220, 38, 38, 0.08)",
-            border: "1px solid rgba(220, 38, 38, 0.2)",
-            color: "#F87171",
+            backgroundColor: "var(--status-denied-bg)",
+            border: "1px solid var(--status-denied-border)",
+            color: "var(--status-denied-text)",
           },
         };
     }
@@ -228,10 +228,10 @@ export function ClinicProofResultPanel({
             <div
               style={{
                 padding: "16px",
-                backgroundColor: "rgba(22, 163, 74, 0.08)",
-                border: "1px solid rgba(22, 163, 74, 0.2)",
+                backgroundColor: "var(--status-approved-bg)",
+                border: "1px solid var(--status-approved-border)",
                 borderRadius: "var(--radius-md)",
-                color: "#4ADE80",
+                color: "var(--status-approved-text)",
                 fontSize: "0.95rem",
               }}
             >
@@ -240,7 +240,7 @@ export function ClinicProofResultPanel({
           ) : (
             <form onSubmit={handleSubmitReferral} style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
               {referralError && (
-                <div style={{ color: "#F87171", fontSize: "0.9rem" }}>{referralError}</div>
+                <div style={{ color: "var(--status-denied-text)", fontSize: "0.9rem" }}>{referralError}</div>
               )}
               <div className="form-group">
                 <label className="form-label">Referral Specialty Type</label>

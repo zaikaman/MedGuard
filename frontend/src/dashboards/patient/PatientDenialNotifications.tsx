@@ -60,9 +60,9 @@ export function PatientDenialNotifications() {
           key={claim.id}
           className="card-section"
           style={{
-            borderColor: "rgba(220, 38, 38, 0.4)",
-            borderLeft: "4px solid #DC2626",
-            backgroundColor: "rgba(220, 38, 38, 0.03)",
+            borderColor: "var(--status-denied-border)",
+            borderLeft: "4px solid var(--status-denied-text)",
+            backgroundColor: "var(--status-denied-bg)",
           }}
         >
           <div className="card-title-container">
@@ -76,7 +76,7 @@ export function PatientDenialNotifications() {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  color: "#F87171",
+                  color: "var(--status-denied-text)",
                 }}
               >
                 <svg fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" style={{ width: "18px", height: "18px" }}>

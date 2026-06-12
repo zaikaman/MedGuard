@@ -75,33 +75,13 @@ export default function LoginPage() {
         </div>
 
         {error && (
-          <div
-            style={{
-              padding: "12px",
-              backgroundColor: "rgba(220, 38, 38, 0.15)",
-              border: "1px solid #DC2626",
-              borderRadius: "var(--radius-sm)",
-              color: "#F87171",
-              fontSize: "0.85rem",
-              lineHeight: "1.4",
-            }}
-          >
+          <div className="alert-banner-error">
             {error}
           </div>
         )}
 
         {message && (
-          <div
-            style={{
-              padding: "12px",
-              backgroundColor: "rgba(24, 95, 165, 0.15)",
-              border: "1px solid var(--primary-blue)",
-              borderRadius: "var(--radius-sm)",
-              color: "#70B3F5",
-              fontSize: "0.85rem",
-              lineHeight: "1.4",
-            }}
-          >
+          <div className="alert-banner-message">
             {message}
           </div>
         )}

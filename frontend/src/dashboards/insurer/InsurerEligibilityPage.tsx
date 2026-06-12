@@ -262,10 +262,10 @@ export default function InsurerEligibilityPage() {
           />
         ) : verification && verification.result !== "accepted" ? (
           /* Verification Failed / Denied Display */
-          <div className="card-section" style={{ borderColor: "#DC2626" }}>
+          <div className="card-section" style={{ borderColor: "var(--status-denied-border)" }}>
             <div className="card-title-container">
               <div>
-                <h2 className="card-title" style={{ color: "#F87171" }}>Verification Unsuccessful</h2>
+                <h2 className="card-title" style={{ color: "var(--status-denied-text)" }}>Verification Unsuccessful</h2>
                 <p className="card-subtitle">Cryptographic presentation policy rejected or failed</p>
               </div>
               <div style={{ display: "flex", gap: "10px", alignItems: "center" }}>
@@ -277,10 +277,10 @@ export default function InsurerEligibilityPage() {
               <div
                 style={{
                   padding: "16px",
-                  backgroundColor: "rgba(220, 38, 38, 0.08)",
-                  border: "1px solid rgba(220, 38, 38, 0.2)",
+                  backgroundColor: "var(--status-denied-bg)",
+                  border: "1px solid var(--status-denied-border)",
                   borderRadius: "var(--radius-md)",
-                  color: "#F87171",
+                  color: "var(--status-denied-text)",
                   fontSize: "0.95rem",
                 }}
               >
@@ -323,7 +323,7 @@ export default function InsurerEligibilityPage() {
             </div>
 
             {error && (
-              <div style={{ padding: "12px", backgroundColor: "rgba(239, 68, 68, 0.1)", borderRadius: "var(--radius-sm)", color: "#F87171", marginBottom: "20px", fontSize: "0.9rem" }}>
+              <div className="alert-banner-error" style={{ marginBottom: "20px" }}>
                 Error: {error}
               </div>
             )}

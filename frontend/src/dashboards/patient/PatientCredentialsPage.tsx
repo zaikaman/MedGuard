@@ -162,16 +162,7 @@ export default function PatientCredentialsPage() {
       </div>
 
       {actionError && (
-        <div
-          style={{
-            padding: "16px",
-            backgroundColor: "rgba(220, 38, 38, 0.1)",
-            border: "1px solid #DC2626",
-            borderRadius: "var(--radius-md)",
-            color: "#F87171",
-            fontSize: "0.95rem",
-          }}
-        >
+        <div className="alert-banner-error" style={{ marginBottom: "16px" }}>
           {actionError}
         </div>
       )}

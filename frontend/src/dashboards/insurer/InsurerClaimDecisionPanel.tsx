@@ -49,9 +49,9 @@ export function InsurerClaimDecisionPanel({
   if (error || submitError) {
     const displayError = error || submitError;
     return (
-      <div className="card-section" style={{ borderColor: "#DC2626" }}>
+      <div className="card-section" style={{ borderColor: "var(--status-denied-border)" }}>
         <div className="card-title-container">
-          <h2 className="card-title" style={{ color: "#F87171" }}>Decision Recording Failed</h2>
+          <h2 className="card-title" style={{ color: "var(--status-denied-text)" }}>Decision Recording Failed</h2>
           <button onClick={onReset} className="btn btn-outline">Back</button>
         </div>
         <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -61,10 +61,10 @@ export function InsurerClaimDecisionPanel({
           <div
             style={{
               padding: "16px",
-              backgroundColor: "rgba(220, 38, 38, 0.08)",
-              border: "1px solid rgba(220, 38, 38, 0.2)",
+              backgroundColor: "var(--status-denied-bg)",
+              border: "1px solid var(--status-denied-border)",
               borderRadius: "var(--radius-md)",
-              color: "#F87171",
+              color: "var(--status-denied-text)",
               fontFamily: "monospace",
               fontSize: "0.85rem",
             }}
@@ -86,9 +86,9 @@ export function InsurerClaimDecisionPanel({
           title: "Claim Approved",
           description: "This claim eligibility verification has been successfully verified, and the coverage claim has been approved by the insurer.",
           alertStyle: {
-            backgroundColor: "rgba(22, 163, 74, 0.08)",
-            border: "1px solid rgba(22, 163, 74, 0.2)",
-            color: "#4ADE80",
+            backgroundColor: "var(--status-approved-bg)",
+            border: "1px solid var(--status-approved-border)",
+            color: "var(--status-approved-text)",
           },
         };
       case "denied":
@@ -99,9 +99,9 @@ export function InsurerClaimDecisionPanel({
           title: "Claim Denied",
           description: "This claim coverage check was processed and denied by the policy evaluation rules.",
           alertStyle: {
-            backgroundColor: "rgba(220, 38, 38, 0.08)",
-            border: "1px solid rgba(220, 38, 38, 0.2)",
-            color: "#F87171",
+            backgroundColor: "var(--status-denied-bg)",
+            border: "1px solid var(--status-denied-border)",
+            color: "var(--status-denied-text)",
           },
         };
       case "needs_review":
@@ -112,9 +112,9 @@ export function InsurerClaimDecisionPanel({
           title: "Needs Review",
           description: "The eligibility details require manual review or audit by our medical billing board before confirmation.",
           alertStyle: {
-            backgroundColor: "rgba(217, 119, 6, 0.08)",
-            border: "1px solid rgba(217, 119, 6, 0.2)",
-            color: "#FBBF24",
+            backgroundColor: "var(--status-pending-bg)",
+            border: "1px solid var(--status-pending-border)",
+            color: "var(--status-pending-text)",
           },
         };
       case "received":
@@ -267,10 +267,10 @@ export function InsurerClaimDecisionPanel({
             style={{
               backgroundColor:
                 status === "approved"
-                  ? "var(--status-approved-bg)"
+                  ? "var(--status-approved-solid)"
                   : status === "denied"
-                  ? "var(--status-denied-bg)"
-                  : "var(--status-pending-bg)",
+                  ? "var(--status-denied-solid)"
+                  : "var(--status-pending-solid)",
               borderColor: "transparent",
               color: "#FFF",
             }}
